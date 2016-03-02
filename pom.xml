@@ -65,7 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</developers>
 
 	<modules>
-		<module>nexus-jqassistant-common-plugin</module>
+		<module>nexus-jqassistant-shared-plugin</module>
 	</modules>
 
 	<dependencyManagement>
@@ -73,23 +73,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<dependency>
 				<groupId>org.sonatype.nexus</groupId>
 				<artifactId>nexus-plugin-api</artifactId>
+				<version>${nexus.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sonatype.nexus.plugins</groupId>
 				<artifactId>nexus-maven-bridge-plugin</artifactId>
+				<version>${nexus.version}</version>
 				<type>${nexus-plugin.type}</type>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sonatype.nexus.plugins</groupId>
 				<artifactId>nexus-ui-extjs3-plugin</artifactId>
+				<version>${nexus.version}</version>
 				<type>${nexus-plugin.type}</type>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sonatype.nexus.plugins</groupId>
 				<artifactId>nexus-siesta-plugin</artifactId>
+				<version>${nexus.version}</version>
 				<type>${nexus-plugin.type}</type>
 				<scope>provided</scope>
 			</dependency>

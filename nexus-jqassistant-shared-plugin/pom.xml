@@ -25,11 +25,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>nexus-jqassistant-common-plugin</artifactId>
+	<artifactId>nexus-jqassistant-shared-plugin</artifactId>
 	<packaging>nexus-plugin</packaging>
 
-	<name>Nexus jQAssistant Plugin :: Common</name>
-	<description>This nexus plugin contains all the common components.</description>
+	<name>Nexus jQAssistant Plugin :: Shared</name>
+	<description>This nexus plugin contains all the shared components.</description>
 
 	<dependencies>
 		<dependency>
