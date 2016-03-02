@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Copyright (C) 2015 Markus Bernhardt
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<security>
+	<version>2.0.3</version>
+
+	<roles>
+		<role>
+			<id>jqassistant-admin</id>
+			<name>jQAssistant Admin</name>
+			<description>Gives admin access to jQAssistant</description>
+			<sessionTimeout>60</sessionTimeout>
+			<privileges>
+				<privilege>jqassistant-query</privilege>
+				<privilege>jqassistant-config</privilege>
+			</privileges>
+		</role>
+		<role>
+			<id>jqassistant-user</id>
+			<name>jQAssistant User</name>
+			<description>Gives user access to jQAssistant</description>
+			<sessionTimeout>60</sessionTimeout>
+			<privileges>
+				<privilege>jqassistant-query</privilege>
+			</privileges>
+		</role>
+	</roles>
+
+	<privileges>
+		<privilege>
+			<id>jqassistant-query</id>
+			<type>method</type>
+			<name>jQAssistant Query</name>
+			<description>Give permission to execute queries against the jQAssistant database</description>
+			<properties>
+				<property>
+					<key>method</key>
+					<value>*</value>
+				</property>
+				<property>
+					<key>permission</key>
+					<value>nexus:jqassistant-query</value>
+				</property>
+			</properties>
+		</privilege>
+		<privilege>
+			<id>jqassistant-config</id>
+			<type>method</type>
+			<name>jQAssistant Configuration</name>
+			<description>Give permission to administer jQAssistant configuration</description>
+			<properties>
+				<property>
+					<key>method</key>
+					<value>*</value>
+				</property>
+				<property>
+					<key>permission</key>
+					<value>nexus:jqassistant-config</value>
+				</property>
+			</properties>
+		</privilege>
+	</privileges>
+
+</security>
