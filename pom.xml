@@ -64,6 +64,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</developer>
 	</developers>
 
+	<modules>
+		<module>nexus-jqassistant-common-plugin</module>
+	</modules>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
