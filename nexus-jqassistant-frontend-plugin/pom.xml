@@ -25,11 +25,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>nexus-jqassistant-backend-plugin</artifactId>
+	<artifactId>nexus-jqassistant-frontend-plugin</artifactId>
 	<packaging>nexus-plugin</packaging>
 
-	<name>Nexus jQAssistant Plugin :: Backend</name>
-	<description>This nexus plugin contains the jqa scanner, jqa models, neo4j database and much more.</description>
+	<name>Nexus jQAssistant Plugin :: Frontend</name>
+	<description>This nexus plugin contains the user interface and REST interfaces.</description>
 
 	<dependencies>
 		<dependency>
@@ -45,21 +45,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</dependency>
 		<dependency>
 			<groupId>org.sonatype.nexus.plugins</groupId>
-			<artifactId>nexus-maven-bridge-plugin</artifactId>
+			<artifactId>nexus-ui-extjs3-plugin</artifactId>
 			<type>${nexus-plugin.type}</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.buschmais.jqassistant.core</groupId>
-			<artifactId>jqassistant.core.plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.buschmais.jqassistant.plugin</groupId>
-			<artifactId>jqassistant.plugin.maven3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.buschmais.jqassistant.scm</groupId>
-			<artifactId>jqassistant.scm.neo4jserver</artifactId>
+			<groupId>org.sonatype.nexus.plugins</groupId>
+			<artifactId>nexus-siesta-plugin</artifactId>
+			<type>${nexus-plugin.type}</type>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -69,6 +63,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<!-- Enables the 'nexus-plugin' packaging type -->
 				<groupId>org.sonatype.nexus</groupId>
 				<artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- Compress static content -->
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 		<resources>
