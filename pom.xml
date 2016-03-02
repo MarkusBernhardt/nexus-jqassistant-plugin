@@ -65,6 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</developers>
 
 	<modules>
+		<module>nexus-jqassistant-backend-plugin</module>
 		<module>nexus-jqassistant-shared-plugin</module>
 	</modules>
 
