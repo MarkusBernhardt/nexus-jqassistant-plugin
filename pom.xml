@@ -40,6 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<downloadJavadocs>true</downloadJavadocs>
 		<java.version>1.7</java.version>
 		<jqassistant.version>1.1.2</jqassistant.version>
+		<neo4j.version>2.3.2</neo4j.version>
 	</properties>
 
 	<scm>
@@ -110,6 +111,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<!-- jqassistant overwrites the property <org.neo4j_version/> already 
+				     set by the artifact xo.parent. This does not work for Nexus plugins
+				     OSGI bundles. Don't know why or how to fix otherwise. -->
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j</artifactId>
+				<version>${neo4j.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
