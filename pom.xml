@@ -77,6 +77,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<artifactId>nexus-plugin-api</artifactId>
 				<version>${nexus.version}</version>
 				<scope>provided</scope>
+				<exclusions>
+					<!-- The following libraries are provided by Nexus, but in the 
+					     required versions not available on Maven Central. -->
+					<exclusion>
+						<groupId>commons-beanutils</groupId>
+						<artifactId>commons-beanutils-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>bitwalker</groupId>
+						<artifactId>UserAgentUtils</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.sf.smc</groupId>
+						<artifactId>statemap</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.buschmais.jqassistant.core</groupId>
