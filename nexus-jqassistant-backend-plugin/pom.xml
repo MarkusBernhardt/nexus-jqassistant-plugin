@@ -36,6 +36,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<groupId>org.sonatype.nexus</groupId>
 			<artifactId>nexus-plugin-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>nexus-jqassistant-shared-plugin</artifactId>
+			<version>${project.version}</version>
+			<type>${nexus-plugin.type}</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sonatype.nexus.plugins</groupId>
+			<artifactId>nexus-maven-bridge-plugin</artifactId>
+			<type>${nexus-plugin.type}</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!-- jQAssistant core -->
+			<groupId>com.buschmais.jqassistant.core</groupId>
+			<artifactId>jqassistant.core.plugin</artifactId>
+		</dependency>
+		<dependency>
+			<!-- We need the Maven3 scanner -->
+			<groupId>com.buschmais.jqassistant.plugin</groupId>
+			<artifactId>jqassistant.plugin.maven3</artifactId>
+		</dependency>
+		<dependency>
+			<!-- We need the Neo4j server -->
+			<groupId>com.buschmais.jqassistant.scm</groupId>
+			<artifactId>jqassistant.scm.neo4jserver</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

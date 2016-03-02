@@ -78,30 +78,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.sonatype.nexus.plugins</groupId>
-				<artifactId>nexus-maven-bridge-plugin</artifactId>
-				<version>${nexus.version}</version>
-				<type>${nexus-plugin.type}</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.nexus.plugins</groupId>
-				<artifactId>nexus-ui-extjs3-plugin</artifactId>
-				<version>${nexus.version}</version>
-				<type>${nexus-plugin.type}</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.nexus.plugins</groupId>
-				<artifactId>nexus-siesta-plugin</artifactId>
-				<version>${nexus.version}</version>
-				<type>${nexus-plugin.type}</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
 				<groupId>com.buschmais.jqassistant.core</groupId>
 				<artifactId>jqassistant.core.plugin</artifactId>
 				<version>${jqassistant.version}</version>
+				<exclusions>
+					<exclusion>
+						<!-- Forbidden by Nexus Plugin build. Included in JDK 6. -->
+						<groupId>javax.xml.bind</groupId>
+						<artifactId>jaxb-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.buschmais.jqassistant.plugin</groupId>
@@ -112,6 +98,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<groupId>com.buschmais.jqassistant.scm</groupId>
 				<artifactId>jqassistant.scm.neo4jserver</artifactId>
 				<version>${jqassistant.version}</version>
+				<exclusions>
+					<exclusion>
+					<!-- Forbidden by Nexus Plugin build -->
+						<groupId>commons-beanutils</groupId>
+						<artifactId>commons-beanutils</artifactId>
+					</exclusion>
+					<exclusion>
+					<!-- Forbidden by Nexus Plugin build -->
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
