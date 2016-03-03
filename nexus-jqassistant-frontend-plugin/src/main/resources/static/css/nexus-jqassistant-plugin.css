@@ -14,23 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-.nx-jqassistant-view-panel-description {
+ 
+.nx-jqassistant-view-config-panel-description {
 	font: normal 11px arial, tahoma, verdana, helvetica;
 }
 
-.nx-jqassistant-view-panel-description {
+.nx-jqassistant-view-config-panel-description {
 	padding: 10px;
 	height: 60;
 	flex: 0;
 }
 
-.nx-jqassistant-view-panel-description img {
+.nx-jqassistant-view-config-panel-description img {
 	float: left;
 	padding-right: 10px;
 	height: 25px;
 }
 
-.nx-jqassistant-view-panel-description div {
+.nx-jqassistant-view-config-panel-description div {
 	vertical-align: middle;
 }
 

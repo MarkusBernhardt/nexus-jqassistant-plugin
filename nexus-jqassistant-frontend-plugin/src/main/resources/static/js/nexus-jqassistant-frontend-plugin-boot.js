@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+
 /*global define,NX*/
-define('nexus-jqassistant-frontend-plugin-boot', [ 'Nexus/jqassistant/controller/NavigationMenu' ], function() {
+define('nexus-jqassistant-frontend-plugin-boot', [ 'Nexus/jqassistant/controller/ConfigPanelController' ], function() {
 	NX.log.debug('Module loaded: nexus-jqassistant-frontend-plugin-boot');
-	NX.create('Nexus.jqassistant.controller.NavigationMenu').init();
+	NX.create('Nexus.jqassistant.controller.ConfigPanelController').init();
 });
