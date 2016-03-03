@@ -58,7 +58,7 @@ public class SettingsResource extends ComponentSupport implements Resource {
 	 */
 	@GET
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
-	@RequiresPermissions(FrontendPlugin.PERMISSION_CONFIG)
+	@RequiresPermissions(FrontendPlugin.PERMISSION)
 	public synchronized SettingsXO get() {
 		return settingsProvider.getSettings();
 
@@ -69,7 +69,7 @@ public class SettingsResource extends ComponentSupport implements Resource {
 	 */
 	@PUT
 	@Consumes({ APPLICATION_JSON, APPLICATION_XML })
-	@RequiresPermissions(FrontendPlugin.PERMISSION_CONFIG)
+	@RequiresPermissions(FrontendPlugin.PERMISSION)
 	public synchronized void put(SettingsXO settings) {
 		settingsProvider.setSettings(settings);
 

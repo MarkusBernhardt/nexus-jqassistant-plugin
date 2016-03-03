@@ -21,32 +21,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 	<roles>
 		<role>
-			<id>jqassistant-admin</id>
-			<name>jQAssistant Admin</name>
-			<description>Gives admin access to jQAssistant</description>
+			<id>jqassistant</id>
+			<name>jQAssistant</name>
+			<description>Gives access to jQAssistant</description>
 			<sessionTimeout>60</sessionTimeout>
 			<privileges>
-				<privilege>jqassistant-query</privilege>
-				<privilege>jqassistant-config</privilege>
-			</privileges>
-		</role>
-		<role>
-			<id>jqassistant-user</id>
-			<name>jQAssistant User</name>
-			<description>Gives user access to jQAssistant</description>
-			<sessionTimeout>60</sessionTimeout>
-			<privileges>
-				<privilege>jqassistant-query</privilege>
+				<privilege>jqassistant-all</privilege>
 			</privileges>
 		</role>
 	</roles>
 
 	<privileges>
 		<privilege>
-			<id>jqassistant-query</id>
+			<id>jqassistant-all</id>
 			<type>method</type>
-			<name>jQAssistant Query</name>
-			<description>Give permission to execute queries against the jQAssistant database</description>
+			<name>jQAssistant</name>
+			<description>Give permission to use jQAssistant</description>
 			<properties>
 				<property>
 					<key>method</key>
@@ -54,23 +44,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</property>
 				<property>
 					<key>permission</key>
-					<value>nexus:jqassistant-query</value>
-				</property>
-			</properties>
-		</privilege>
-		<privilege>
-			<id>jqassistant-config</id>
-			<type>method</type>
-			<name>jQAssistant Configuration</name>
-			<description>Give permission to administer jQAssistant configuration</description>
-			<properties>
-				<property>
-					<key>method</key>
-					<value>*</value>
-				</property>
-				<property>
-					<key>permission</key>
-					<value>nexus:jqassistant-config</value>
+					<value>nexus:jqassistant</value>
 				</property>
 			</properties>
 		</privilege>

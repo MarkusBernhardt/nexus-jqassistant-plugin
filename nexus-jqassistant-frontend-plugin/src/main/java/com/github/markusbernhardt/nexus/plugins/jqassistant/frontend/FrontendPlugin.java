@@ -60,16 +60,10 @@ public class FrontendPlugin extends PluginIdentity {
 	public static final String REST_PREFIX = "/jqassistant";
 
 	/**
-	 * Config permission.
+	 * jQAssistant permission.
 	 */
 	@NonNls
-	public static final String PERMISSION_CONFIG = "nexus:jqassistant-config";
-
-	/**
-	 * Query permission.
-	 */
-	@NonNls
-	public static final String PERMISSION_QUERY = "nexus:jqassistant-query";
+	public static final String PERMISSION = "nexus:jqassistant";
 
 	/**
 	 * Default constructor.
