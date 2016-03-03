@@ -105,6 +105,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<groupId>javax.xml.bind</groupId>
 						<artifactId>jaxb-api</artifactId>
 					</exclusion>
+					<exclusion>
+						<!-- Forbidden by OSGI. Tries to overwrite java.util.Hashtable. -->
+						<groupId>com.boundary</groupId>
+						<artifactId>high-scale-lib</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
