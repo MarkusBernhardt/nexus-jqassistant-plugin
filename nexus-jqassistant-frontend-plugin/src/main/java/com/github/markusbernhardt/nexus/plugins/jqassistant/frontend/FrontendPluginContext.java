@@ -1,4 +1,4 @@
-package com.github.markusbernhardt.nexus.plugins.jqassistant.shared;
+package com.github.markusbernhardt.nexus.plugins.jqassistant.frontend;
 /*
  * Copyright (C) 2015 Markus Bernhardt
  * 
@@ -20,13 +20,24 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.plugin.support.StaticSecurityResourceSupport;
+import org.slf4j.Logger;
 
 @Named
 @Singleton
-public class SecurityResource extends StaticSecurityResourceSupport {
+public class FrontendPluginContext {
+
+	/**
+	 * The Logger to use
+	 */
+	protected final Logger logger;
+
 	@Inject
-	public SecurityResource(final Plugin owner) {
-		super(owner);
+	public FrontendPluginContext(Logger logger) throws Exception {
+		this.logger = logger;
 	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
 }

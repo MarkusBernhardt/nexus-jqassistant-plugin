@@ -27,19 +27,13 @@ import org.sonatype.nexus.plugin.PluginIdentity;
 
 @Named
 @EagerSingleton
-public class Plugin extends PluginIdentity {
+public class SharedPlugin extends PluginIdentity {
 
 	/**
 	 * Prefix for ID-like things.
 	 */
 	@NonNls
 	public static final String ID_PREFIX = "jqassistant-shared";
-
-	/**
-	 * Prefix for REST resources
-	 */
-	@NonNls
-	public static final String REST_PREFIX = "/jqassistant";
 
 	/**
 	 * Expected groupId for plugin artifact.
@@ -60,17 +54,11 @@ public class Plugin extends PluginIdentity {
 	public static final String PLUGIN_VERSION = loadBundleProperty("version");
 
 	/**
-	 * Prefix for permissions related to loggers.
-	 */
-	@NonNls
-	public static final String PERMISSION_PREFIX = "nexus:jqassistant";
-
-	/**
 	 * Default constructor.
 	 * 
 	 * @throws Exception
 	 */
-	public Plugin() throws Exception {
+	public SharedPlugin() throws Exception {
 		super(PLUGIN_GROUP_ID, PLUGIN_ARTIFACT_ID);
 
 		assert PLUGIN_ARTIFACT_ID.equals(loadBundleProperty("artifactId")) : PLUGIN_ARTIFACT_ID;
@@ -79,7 +67,7 @@ public class Plugin extends PluginIdentity {
 
 	protected static String loadBundleProperty(String propertyName) {
 		try {
-			return ResourceBundle.getBundle(Plugin.class.getCanonicalName().replace(".", File.separator)).getString(propertyName);
+			return ResourceBundle.getBundle(SharedPlugin.class.getCanonicalName().replace(".", File.separator)).getString(propertyName);
 		} catch (RuntimeException e) {
 			return "unknown";
 		}

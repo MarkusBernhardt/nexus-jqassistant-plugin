@@ -26,7 +26,7 @@ import org.sonatype.sisu.goodies.eventbus.EventBus;
 
 @Named
 @Singleton
-public class PluginContextShared {
+public class SharedPluginContext {
 
 	/**
 	 * The Logger to use
@@ -44,7 +44,7 @@ public class PluginContextShared {
 	protected final EventBus eventBus;
 
 	@Inject
-	public PluginContextShared(Logger logger, ApplicationConfiguration applicationConfiguration, EventBus eventBus) throws Exception {
+	public SharedPluginContext(Logger logger, ApplicationConfiguration applicationConfiguration, EventBus eventBus) throws Exception {
 		this.logger = logger;
 		this.applicationConfiguration = applicationConfiguration;
 		this.eventBus = eventBus;

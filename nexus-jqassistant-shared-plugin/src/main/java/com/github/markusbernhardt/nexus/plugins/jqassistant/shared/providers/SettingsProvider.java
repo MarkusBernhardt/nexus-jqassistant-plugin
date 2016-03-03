@@ -26,7 +26,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.PluginContextShared;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.SharedPluginContext;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 
@@ -39,7 +39,7 @@ public class SettingsProvider {
 	/**
 	 * The plug in context
 	 */
-	protected final PluginContextShared pluginContext;
+	protected final SharedPluginContext pluginContext;
 
 	/**
 	 * The file to read from or write to
@@ -52,7 +52,7 @@ public class SettingsProvider {
 	protected SettingsXO settings;
 
 	@Inject
-	SettingsProvider(PluginContextShared pluginContext) {
+	SettingsProvider(SharedPluginContext pluginContext) {
 		this.pluginContext = pluginContext;
 		this.settingsFile = new File(pluginContext.getApplicationConfiguration().getConfigurationDirectory(), SETTINGS_FILENAME);
 		this.settings = loadOrCreateSettingsXO();
