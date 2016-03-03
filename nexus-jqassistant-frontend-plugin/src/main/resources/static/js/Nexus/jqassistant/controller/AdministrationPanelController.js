@@ -17,12 +17,12 @@
 
 /*global NX, Ext, Sonatype, Nexus*/
 /**
- * JQAssistant config panel controller.
+ * JQAssistant administration panel controller.
  */
-NX.define('Nexus.jqassistant.controller.ConfigPanelController', {
+NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 	extend : 'Nexus.controller.Controller',
 
-	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.ConfigPanel' ],
+	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.AdministrationPanel' ],
 
 	init : function() {
 		var me = this;
@@ -49,13 +49,13 @@ NX.define('Nexus.jqassistant.controller.ConfigPanelController', {
 			var sp = Sonatype.lib.Permissions;
 
 			panel.add({
-				enabled : sp.checkPermission('nexus:jqassistant-config', sp.READ),
+				enabled : sp.checkPermission('nexus:jqassistant', sp.READ),
 				sectionId : 'st-nexus-config',
 				title : 'jQAssistant',
 				tabId : 'jqassistant',
 				tabCode : function() {
 					return Ext.create({
-						xtype : 'nx-jqassistant-view-config-panel',
+						xtype : 'nx-jqassistant-view-administration-panel',
 						id : 'jqassistant'
 					});
 				}

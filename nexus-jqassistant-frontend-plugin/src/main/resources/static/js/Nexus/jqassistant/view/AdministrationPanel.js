@@ -16,18 +16,18 @@
  */
 
 /**
- * jQAssistant config panel.
+ * jQAssistant administration panel.
  */
-NX.define('Nexus.jqassistant.view.ConfigPanel', {
+NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 	extend : 'Ext.Panel',
 
 	mixins : [ 'Nexus.LogAwareMixin' ],
 
 	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.Settings' ],
 
-	xtype : 'nx-jqassistant-view-config-panel',
+	xtype : 'nx-jqassistant-view-administration-panel',
 	title : 'jQAssistant',
-	cls : 'nx-jqassistant-view-config-panel',
+	cls : 'nx-jqassistant-view-administration-panel',
 
 	border : false,
 	layout : {
@@ -44,7 +44,7 @@ NX.define('Nexus.jqassistant.view.ConfigPanel', {
 		Ext.apply(me, {
 			items : [ {
 				xtype : 'panel',
-				cls : 'nx-jqassistant-view-config-panel-description',
+				cls : 'nx-jqassistant-view-administration-panel-description',
 				html : icons.get('jqa_full').img,
 				border : false
 			}, {

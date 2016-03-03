@@ -1,3 +1,4 @@
+package com.github.markusbernhardt.nexus.plugins.jqassistant.backend;
 /*
  * Copyright (C) 2015 Markus Bernhardt
  * 
@@ -15,8 +16,28 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/*global define,NX*/
-define('nexus-jqassistant-frontend-plugin-boot', [ 'Nexus/jqassistant/controller/AdministrationPanelController' ], function() {
-	NX.log.debug('Module loaded: nexus-jqassistant-frontend-plugin-boot');
-	NX.create('Nexus.jqassistant.controller.AdministrationPanelController').init();
-});
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+
+@Named
+@Singleton
+public class BackendPluginContext {
+
+	/**
+	 * The Logger to use
+	 */
+	protected final Logger logger;
+
+	@Inject
+	public BackendPluginContext(Logger logger) throws Exception {
+		this.logger = logger;
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+}
