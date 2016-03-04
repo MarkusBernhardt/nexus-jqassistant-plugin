@@ -23,7 +23,7 @@ NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 
 	mixins : [ 'Nexus.LogAwareMixin' ],
 
-	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.Settings', 'Nexus.jqassistant.view.ModelLog' ],
+	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.Settings', 'Nexus.jqassistant.view.ModelLog', 'Nexus.jqassistant.view.ArtifactLog' ],
 
 	xtype : 'nx-jqassistant-view-administration-panel',
 	title : 'jQAssistant',
@@ -57,6 +57,8 @@ NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 					xtype : 'nx-jqassistant-view-settings'
 				}, {
 					xtype : 'nx-jqassistant-view-model-log'
+				}, {
+					xtype : 'nx-jqassistant-view-artifact-log'
 				} ],
 				activeTab : 0,
 
@@ -64,6 +66,7 @@ NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 					afterrender : function(tabpanel) {
 						// default to have the log tabs hidden
 						tabpanel.hideTabStripItem(me.down('nx-jqassistant-view-model-log'));
+						tabpanel.hideTabStripItem(me.down('nx-jqassistant-view-artifact-log'));
 					}
 				}
 			} ]
