@@ -10,9 +10,9 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.events.EventSubscriber;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ArtifactEvent;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ArtifactLogListXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ArtifactLogXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 import com.google.common.eventbus.Subscribe;
 
 @Named
@@ -21,7 +21,7 @@ public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, Arti
 
 	@Inject
 	public ArtifactLogProvider(SettingsProvider settingsProvider) {
-		super(settingsProvider.getSettings().getArtifactLogSize());
+		super(settingsProvider.getSettings());
 	}
 
 	@Subscribe
@@ -63,8 +63,8 @@ public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, Arti
 	}
 
 	@Override
-	protected int getNewMaxLogSize(SettingsEvent evt) {
-		return evt.getSettingsNew().getArtifactLogSize();
+	protected int getMaxLogSize(SettingsXO settings) {
+		return settings.getArtifactLogSize();
 	}
 
 }

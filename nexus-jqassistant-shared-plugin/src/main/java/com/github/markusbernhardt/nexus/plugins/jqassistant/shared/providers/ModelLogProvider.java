@@ -9,9 +9,9 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.events.EventSubscriber;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ArtifactEvent;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogListXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 import com.google.common.eventbus.Subscribe;
 
 @Named
@@ -20,7 +20,7 @@ public class ModelLogProvider extends AbstractLogProvider<ModelLogXO, ModelLogLi
 
 	@Inject
 	public ModelLogProvider(SettingsProvider settingsProvider) {
-		super(settingsProvider.getSettings().getModelLogSize());
+		super(settingsProvider.getSettings());
 	}
 
 	@Subscribe
@@ -50,8 +50,8 @@ public class ModelLogProvider extends AbstractLogProvider<ModelLogXO, ModelLogLi
 	}
 
 	@Override
-	protected int getNewMaxLogSize(SettingsEvent evt) {
-		return evt.getSettingsNew().getModelLogSize();
+	protected int getMaxLogSize(SettingsXO settings) {
+		return settings.getModelLogSize();
 	}
 
 }

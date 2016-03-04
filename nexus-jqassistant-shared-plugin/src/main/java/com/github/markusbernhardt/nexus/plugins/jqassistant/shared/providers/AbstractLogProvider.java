@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.sonatype.nexus.events.EventSubscriber;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 import com.google.common.eventbus.Subscribe;
 
 public abstract class AbstractLogProvider<T, L> implements EventSubscriber {
@@ -55,15 +56,15 @@ public abstract class AbstractLogProvider<T, L> implements EventSubscriber {
 		}
 	};
 
-	public AbstractLogProvider(int maxLogSize) {
-		this.maxLogSize = maxLogSize;
+	public AbstractLogProvider(SettingsXO settings) {
+		this.maxLogSize = getMaxLogSize(settings);
 		this.log = new LinkedList<>();
 		this.sequence = new AtomicInteger(0);
 	}
 
 	@Subscribe
 	public synchronized void onSettingsChange(SettingsEvent evt) {
-		int newMaxLogSize = getNewMaxLogSize(evt);
+		int newMaxLogSize = getMaxLogSize(evt.getSettingsNew());
 		if (maxLogSize != newMaxLogSize) {
 			maxLogSize = newMaxLogSize;
 			trimSize();
@@ -120,5 +121,5 @@ public abstract class AbstractLogProvider<T, L> implements EventSubscriber {
 
 	protected abstract L createLogList(int count, int total, List<T> rows);
 
-	protected abstract int getNewMaxLogSize(SettingsEvent evt);
+	protected abstract int getMaxLogSize(SettingsXO settings);
 }
