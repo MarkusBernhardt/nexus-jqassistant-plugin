@@ -23,6 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
             http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
 
+	<!-- Settings -->
 	<xsd:complexType name="settings">
 		<xsd:sequence>
 			<xsd:element name="activated" type="xsd:boolean" />
@@ -32,7 +33,90 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<xsd:element name="requestLogSize" type="xsd:int" />
 		</xsd:sequence>
 	</xsd:complexType>
-
 	<xsd:element name="settings" type="model:settings" />
+
+	<!-- ArtifactLog -->
+	<xsd:complexType name="artifactLog">
+		<xsd:sequence>
+			<xsd:element name="sequence" type="xsd:int" />
+			<xsd:element name="timestamp" type="xsd:string" />
+			<xsd:element name="uid" type="xsd:string" />
+			<xsd:element name="repository" type="xsd:string" />
+			<xsd:element name="groupId" type="xsd:string" />
+			<xsd:element name="artifactId" type="xsd:string" />
+			<xsd:element name="version" type="xsd:string" />
+			<xsd:element name="classifier" type="xsd:string" />
+			<xsd:element name="extension" type="xsd:string" />
+			<xsd:element name="filename" type="xsd:string" />
+			<xsd:element name="duration" type="xsd:string" />
+			<xsd:element name="fullScan" type="xsd:boolean" />
+			<xsd:element name="createdAt" type="xsd:string" />
+			<xsd:element name="createdByAddress" type="xsd:string" />
+			<xsd:element name="createdByUser" type="xsd:string" />
+			<xsd:element name="updatedAt" type="xsd:string" />
+			<xsd:element name="updatedByAddress" type="xsd:string" />
+			<xsd:element name="updatedByUser" type="xsd:string" />
+			<xsd:element name="requestedLastAt" type="xsd:string" />
+			<xsd:element name="requestedCount" type="xsd:string" />
+			<xsd:element name="descriptors" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="artifactLogList">
+		<xsd:sequence>
+			<xsd:element name="count" type="xsd:int" />
+			<xsd:element name="total" type="xsd:int" />
+			<xsd:element name="rows" type="model:artifactLog" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="artifactLogList" type="model:artifactLogList" />
+
+	<!-- ModelLog -->
+	<xsd:complexType name="modelLog">
+		<xsd:sequence>
+			<xsd:element name="sequence" type="xsd:int" />
+			<xsd:element name="timestamp" type="xsd:string" />
+			<xsd:element name="uid" type="xsd:string" />
+			<xsd:element name="repository" type="xsd:string" />
+			<xsd:element name="groupId" type="xsd:string" />
+			<xsd:element name="artifactId" type="xsd:string" />
+			<xsd:element name="version" type="xsd:string" />
+			<xsd:element name="filename" type="xsd:string" />
+			<xsd:element name="duration" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="modelLogList">
+		<xsd:sequence>
+			<xsd:element name="count" type="xsd:int" />
+			<xsd:element name="total" type="xsd:int" />
+			<xsd:element name="rows" type="model:modelLog" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="modelLogList" type="model:modelLogList" />
+
+	<!-- RequestLog -->
+	<xsd:complexType name="requestLog">
+		<xsd:sequence>
+			<xsd:element name="sequence" type="xsd:int" />
+			<xsd:element name="timestamp" type="xsd:string" />
+			<xsd:element name="uid" type="xsd:string" />
+			<xsd:element name="repository" type="xsd:string" />
+			<xsd:element name="groupId" type="xsd:string" />
+			<xsd:element name="artifactId" type="xsd:string" />
+			<xsd:element name="version" type="xsd:string" />
+			<xsd:element name="classifier" type="xsd:string" />
+			<xsd:element name="extension" type="xsd:string" />
+			<xsd:element name="filename" type="xsd:string" />
+			<xsd:element name="requestedLastAt" type="xsd:string" />
+			<xsd:element name="requestedCount" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="requestLogList">
+		<xsd:sequence>
+			<xsd:element name="count" type="xsd:int" />
+			<xsd:element name="total" type="xsd:int" />
+			<xsd:element name="rows" type="model:requestLog" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="requestLogList" type="model:requestLogList" />
 
 </xsd:schema>
