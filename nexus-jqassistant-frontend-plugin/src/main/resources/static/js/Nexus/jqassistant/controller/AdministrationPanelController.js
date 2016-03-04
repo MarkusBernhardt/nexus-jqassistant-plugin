@@ -51,6 +51,15 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 			},
 			'#nx-jqassistant-view-artifact-log-button-clear' : {
 				click : me.clearArtifactLog
+			},
+			'#nx-jqassistant-view-request-log' : {
+				activate : me.loadRequestLog
+			},
+			'#nx-jqassistant-view-request-log-button-refresh' : {
+				click : me.refreshRequestLog
+			},
+			'#nx-jqassistant-view-request-log-button-clear' : {
+				click : me.clearRequestLog
 			}
 		});
 
@@ -108,6 +117,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				var tabPanel = Ext.getCmp('jqassistant').down('tabpanel');
 				var modelLogView = Ext.getCmp('nx-jqassistant-view-model-log');
 				var artifactLogView = Ext.getCmp('nx-jqassistant-view-artifact-log');
+				var requestLogView = Ext.getCmp('nx-jqassistant-view-request-log');
 
 				var settingsFullScanField = Ext.getCmp('nx-jqassistant-view-settings-form-full-scan');
 				var settingsModelLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-model-log-size');
@@ -116,6 +126,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				if (values.activated === true) {
 					tabPanel.unhideTabStripItem(modelLogView);
 					tabPanel.unhideTabStripItem(artifactLogView);
+					tabPanel.unhideTabStripItem(requestLogView);
 
 					settingsFullScanField.setDisabled(false);
 					settingsModelLogSizeField.setDisabled(false);
@@ -124,6 +135,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				} else {
 					tabPanel.hideTabStripItem(modelLogView);
 					tabPanel.hideTabStripItem(artifactLogView);
+					tabPanel.hideTabStripItem(requestLogView);
 
 					settingsFullScanField.setDisabled(true);
 					settingsModelLogSizeField.setDisabled(true);
@@ -267,7 +279,62 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				}
 			}
 		});
-	}
+	},
 
+	/**
+	 * @private
+	 */
+	loadRequestLog : function(panel) {
+		var store = panel.getGrid().getStore();
+		store.load({
+			params : {
+				start : 0,
+				limit : Nexus.jqassistant.store.RequestLog.PAGE_SIZE
+			}
+		});
+	},
+
+	/**
+	 * @private
+	 */
+	refreshRequestLog : function(button) {
+		var me = this, panel = button.up('nx-jqassistant-view-request-log');
+		me.loadRequestLog(panel);
+	},
+
+	/**
+	 * @private
+	 */
+	clearRequestLog : function(button) {
+		var me = this, icons = Nexus.jqassistant.Icons, store = button.up('nx-jqassistant-view-request-log').getGrid().getStore();
+
+		Ext.Msg.show({
+			title : 'Clear log',
+			msg : 'Clear the request log?',
+			buttons : Ext.Msg.OKCANCEL,
+			icon : icons.get('clear').variant('x16').cls,
+			fn : function(btn) {
+				if (btn === 'ok') {
+					Ext.Ajax.request({
+						url : Nexus.siesta.basePath + '/jqassistant/request-log',
+						method : 'DELETE',
+						suppressStatus : true,
+						success : function() {
+							me.showMessage('The request log has been cleared');
+							store.load({
+								params : {
+									start : 0,
+									limit : Nexus.jqassistant.store.RequestLog.PAGE_SIZE
+								}
+							});
+						},
+						failure : function(response) {
+							me.showMessage('Failed to clear the request log: ' + me.parseExceptionMessage(response));
+						}
+					});
+				}
+			}
+		});
+	}
 
 });

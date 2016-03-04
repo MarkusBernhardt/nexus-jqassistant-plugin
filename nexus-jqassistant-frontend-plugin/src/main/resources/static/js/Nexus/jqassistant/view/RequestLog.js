@@ -15,19 +15,19 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 /**
- * ArtifactLog panel.
+ * RequestLog panel.
  */
-NX.define('Nexus.jqassistant.view.ArtifactLog', {
+NX.define('Nexus.jqassistant.view.RequestLog', {
 	extend : 'Ext.Panel',
 
 	mixins : [ 'Nexus.LogAwareMixin' ],
 
-	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.store.ArtifactLog' ],
+	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.store.RequestLog' ],
 
-	xtype : 'nx-jqassistant-view-artifact-log',
-	title : 'Artifact Log',
-	id : 'nx-jqassistant-view-artifact-log',
-	cls : 'nx-jqassistant-view-artifact-log',
+	xtype : 'nx-jqassistant-view-request-log',
+	title : 'Request Log',
+	id : 'nx-jqassistant-view-request-log',
+	cls : 'nx-jqassistant-view-request-log',
 
 	border : false,
 	layout : 'fit',
@@ -36,7 +36,7 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 	 * @override
 	 */
 	initComponent : function() {
-		var me = this, icons = Nexus.jqassistant.Icons, store = NX.create('Nexus.jqassistant.store.ArtifactLog'), expander = NX.create(
+		var me = this, icons = Nexus.jqassistant.Icons, store = NX.create('Nexus.jqassistant.store.RequestLog'), expander = NX.create(
 			'Ext.ux.grid.RowExpander', {
 				tpl : new Ext.XTemplate('<table style="padding: 5px;">', '<tpl for="this.attributes(values)">', '<tr>',
 					'<td style="padding-right: 5px;"><b>{name}</b></td>', '<td>{value}</td>', '</tr>', '</tpl>', '</table>', {
@@ -53,56 +53,20 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 								value : values.filename
 							});
 							result.push({
-								name : 'Duration',
-								value : values.duration
+								name : 'Requested At',
+								value : values.requestedAt
 							});
 							result.push({
-								name : 'Full Scan',
-								value : values.fullScan
+								name : 'Requested By IP',
+								value : values.requestedByAddress
 							});
 							result.push({
-								name : 'Created At',
-								value : values.createdAt
-							});
-							result.push({
-								name : 'Created By IP',
-								value : values.createdByAddress
-							});
-							result.push({
-								name : 'Created By User',
-								value : values.createdByUser
-							});
-							result.push({
-								name : 'Last Updated At',
-								value : values.lastUpdatedAt
-							});
-							result.push({
-								name : 'Last Updated By IP',
-								value : values.lastUpdatedByAddress
-							});
-							result.push({
-								name : 'Last Updated By User',
-								value : values.lastUpdatedByUser
-							});
-							result.push({
-								name : 'Last Requested At',
-								value : values.lastRequestedAt
-							});
-							result.push({
-								name : 'Last Requested By IP',
-								value : values.lastRequestedByAddress
-							});
-							result.push({
-								name : 'Last Requested By User',
-								value : values.lastRequestedByUser
+								name : 'Requested By User',
+								value : values.requestedByUser
 							});
 							result.push({
 								name : 'Request Count',
 								value : values.requestCount
-							});
-							result.push({
-								name : 'Descriptors',
-								value : values.descriptors
 							});
 							return result;
 						}
@@ -121,7 +85,7 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 			store : store,
 
 			viewConfig : {
-				emptyText : 'No logged artifacts',
+				emptyText : 'No logged requests',
 				deferEmptyText : false
 			},
 
@@ -153,9 +117,9 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 					dataIndex : 'groupId',
 					width : 200
 				}, {
-					id : 'artifactId',
-					header : 'ArtifactId',
-					dataIndex : 'artifactId',
+					id : 'requestId',
+					header : 'RequestId',
+					dataIndex : 'requestId',
 					width : 200
 				}, {
 					id : 'classifier',
@@ -177,7 +141,7 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 			plugins : [ expander ],
 
 			bbar : NX.create('Ext.PagingToolbar', {
-				pageSize : Nexus.jqassistant.store.ArtifactLog.PAGE_SIZE,
+				pageSize : Nexus.jqassistant.store.RequestLog.PAGE_SIZE,
 				store : store,
 				displayInfo : true,
 				displayMsg : 'Displaying logs {0} - {1} of {2}',
@@ -190,15 +154,15 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 
 			tbar : [ {
 				xtype : 'button',
-				id : 'nx-jqassistant-view-artifact-log-button-refresh',
+				id : 'nx-jqassistant-view-request-log-button-refresh',
 				text : 'Refresh',
-				tooltip : 'Refresh artifact log',
+				tooltip : 'Refresh request log',
 				iconCls : icons.get('refresh').cls
 			}, {
 				xtype : 'button',
-				id : 'nx-jqassistant-view-artifact-log-button-clear',
+				id : 'nx-jqassistant-view-request-log-button-clear',
 				text : 'Clear',
-				tooltip : 'Clear artifact log',
+				tooltip : 'Clear request log',
 				iconCls : icons.get('clear').cls
 			}, '->', {
 				xtype : 'nx-grid-filter-box',
@@ -210,7 +174,7 @@ NX.define('Nexus.jqassistant.view.ArtifactLog', {
 	},
 
 	/**
-	 * Returns the artifact log grid.
+	 * Returns the request log grid.
 	 * 
 	 * @public
 	 */

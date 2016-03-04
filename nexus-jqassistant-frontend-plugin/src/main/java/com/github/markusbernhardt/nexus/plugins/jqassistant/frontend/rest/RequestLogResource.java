@@ -41,7 +41,7 @@ import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.Request
 @Path(RequestLogResource.RESOURCE_URI)
 public class RequestLogResource extends ComponentSupport implements Resource {
 
-	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/requests-log";
+	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/request-log";
 
 	/**
 	 * The plug in context
