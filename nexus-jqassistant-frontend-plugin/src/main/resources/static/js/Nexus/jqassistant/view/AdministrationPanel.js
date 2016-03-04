@@ -23,7 +23,7 @@ NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 
 	mixins : [ 'Nexus.LogAwareMixin' ],
 
-	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.Settings' ],
+	requires : [ 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.Settings', 'Nexus.jqassistant.view.ModelLog' ],
 
 	xtype : 'nx-jqassistant-view-administration-panel',
 	title : 'jQAssistant',
@@ -55,11 +55,15 @@ NX.define('Nexus.jqassistant.view.AdministrationPanel', {
 				layoutOnTabChange : true,
 				items : [ {
 					xtype : 'nx-jqassistant-view-settings'
+				}, {
+					xtype : 'nx-jqassistant-view-model-log'
 				} ],
 				activeTab : 0,
 
 				listeners : {
 					afterrender : function(tabpanel) {
+						// default to have the log tabs hidden
+						tabpanel.hideTabStripItem(me.down('nx-jqassistant-view-model-log'));
 					}
 				}
 			} ]

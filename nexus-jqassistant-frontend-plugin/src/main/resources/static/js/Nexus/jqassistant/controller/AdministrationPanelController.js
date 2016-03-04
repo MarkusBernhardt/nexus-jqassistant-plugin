@@ -33,6 +33,15 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 			},
 			'#nx-jqassistant-view-settings-button-save' : {
 				click : me.saveSettings
+			},
+			'#nx-jqassistant-view-model-log' : {
+				activate : me.loadModelLog
+			},
+			'#nx-jqassistant-view-model-log-button-refresh' : {
+				click : me.refreshModelLog
+			},
+			'#nx-jqassistant-view-model-log-button-clear' : {
+				click : me.clearModelLog
 			}
 		});
 
@@ -40,8 +49,6 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 	},
 
 	/**
-	 * Install panel into main navigation menu.
-	 * 
 	 * @private
 	 */
 	addNavigationMenu : function() {
@@ -64,8 +71,6 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 	},
 
 	/**
-	 * Helper to show jQAssistant message.
-	 * 
 	 * @private
 	 */
 	showMessage : function(message) {
@@ -91,16 +96,23 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 
 				Ext.getCmp('nx-jqassistant-view-settings').setValues(values);
 
+				var tabPanel = Ext.getCmp('jqassistant').down('tabpanel');
+				var modelLogView = Ext.getCmp('nx-jqassistant-view-model-log');
+
 				var settingsFullScanField = Ext.getCmp('nx-jqassistant-view-settings-form-full-scan');
 				var settingsModelLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-model-log-size');
 				var settingsArtifactLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-artifact-log-size');
 				var settingsRequestLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-request-log-size');
 				if (values.activated === true) {
+					tabPanel.unhideTabStripItem(modelLogView);
+
 					settingsFullScanField.setDisabled(false);
 					settingsModelLogSizeField.setDisabled(false);
 					settingsArtifactLogSizeField.setDisabled(false);
 					settingsRequestLogSizeField.setDisabled(false);
 				} else {
+					tabPanel.hideTabStripItem(modelLogView);
+
 					settingsFullScanField.setDisabled(true);
 					settingsModelLogSizeField.setDisabled(true);
 					settingsArtifactLogSizeField.setDisabled(true);
@@ -129,6 +141,62 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 
 				// reload settings to apply view customiztions
 				me.loadSettings();
+			}
+		});
+	},
+
+	/**
+	 * @private
+	 */
+	loadModelLog : function(panel) {
+		var store = panel.getGrid().getStore();
+		store.load({
+			params : {
+				start : 0,
+				limit : Nexus.jqassistant.store.ModelLog.PAGE_SIZE
+			}
+		});
+	},
+
+	/**
+	 * @private
+	 */
+	refreshModelLog : function(button) {
+		var me = this, panel = button.up('nx-jqassistant-view-model-log');
+		me.loadModelLog(panel);
+	},
+
+	/**
+	 * @private
+	 */
+	clearModelLog : function(button) {
+		var me = this, icons = Nexus.jqassistant.Icons, store = button.up('nx-jqassistant-view-model-log').getGrid().getStore();
+
+		Ext.Msg.show({
+			title : 'Clear log',
+			msg : 'Clear the model scan log?',
+			buttons : Ext.Msg.OKCANCEL,
+			icon : icons.get('clear').variant('x16').cls,
+			fn : function(btn) {
+				if (btn === 'ok') {
+					Ext.Ajax.request({
+						url : Nexus.siesta.basePath + '/jqassistant/model-log',
+						method : 'DELETE',
+						suppressStatus : true,
+						success : function() {
+							me.showMessage('The model log has been cleared');
+							store.load({
+								params : {
+									start : 0,
+									limit : Nexus.jqassistant.store.ModelLog.PAGE_SIZE
+								}
+							});
+						},
+						failure : function(response) {
+							me.showMessage('Failed to clear the model log: ' + me.parseExceptionMessage(response));
+						}
+					});
+				}
 			}
 		});
 	}
