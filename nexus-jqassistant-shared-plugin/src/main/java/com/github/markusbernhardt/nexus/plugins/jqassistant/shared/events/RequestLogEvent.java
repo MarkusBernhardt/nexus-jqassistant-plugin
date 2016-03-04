@@ -28,11 +28,13 @@ public class RequestLogEvent extends AbstractEvent<Object> {
 	protected final String classifier;
 	protected final String extension;
 	protected final String filename;
-	protected final long requestedLastAt;
-	protected final long requestedCount;
+	protected final long requestedAt;
+	protected final String requestedByAddress;
+	protected final String requestedByUser;
+	protected final long requestCount;
 
-	public RequestLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier, String extension,
-			String filename, long requestedLastAt, long requestedCount) {
+	public RequestLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
+			String extension, String filename, long requestedAt, String requestedByAddress, String requestedByUser, long requestCount) {
 		super(component);
 		this.uid = uid;
 		this.repository = repository;
@@ -42,8 +44,10 @@ public class RequestLogEvent extends AbstractEvent<Object> {
 		this.classifier = classifier;
 		this.extension = extension;
 		this.filename = filename;
-		this.requestedLastAt = requestedLastAt;
-		this.requestedCount = requestedCount;
+		this.requestedAt = requestedAt;
+		this.requestedByAddress = requestedByAddress;
+		this.requestedByUser = requestedByUser;
+		this.requestCount = requestCount;
 	}
 
 	public String getUid() {
@@ -78,12 +82,20 @@ public class RequestLogEvent extends AbstractEvent<Object> {
 		return filename;
 	}
 
-	public long getRequestedLastAt() {
-		return requestedLastAt;
+	public long getRequestedAt() {
+		return requestedAt;
 	}
 
-	public long getRequestedCount() {
-		return requestedCount;
+	public String getRequestedByAddress() {
+		return requestedByAddress;
+	}
+
+	public String getRequestedByUser() {
+		return requestedByUser;
+	}
+
+	public long getRequestCount() {
+		return requestCount;
 	}
 
 }

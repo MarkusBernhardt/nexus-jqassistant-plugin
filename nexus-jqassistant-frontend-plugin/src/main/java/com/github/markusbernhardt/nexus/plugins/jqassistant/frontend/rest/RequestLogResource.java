@@ -34,14 +34,14 @@ import org.sonatype.sisu.siesta.common.Resource;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPlugin;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPluginContext;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogListXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.RequestLogListXO;
 
 @Named
 @Singleton
 @Path(RequestLogResource.RESOURCE_URI)
 public class RequestLogResource extends ComponentSupport implements Resource {
 
-	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/model-log";
+	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/requests-log";
 
 	/**
 	 * The plug in context
@@ -57,15 +57,15 @@ public class RequestLogResource extends ComponentSupport implements Resource {
 	@GET
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
 	@RequiresPermissions(FrontendPlugin.PERMISSION)
-	public ModelLogListXO get(@QueryParam("start") @javax.ws.rs.DefaultValue("0") int start, @QueryParam("limit") @javax.ws.rs.DefaultValue("-1") int limit) {
-		return frontendPluginContext.getModelLogProvider().getLogList(start, limit);
+	public RequestLogListXO get(@QueryParam("start") @javax.ws.rs.DefaultValue("0") int start, @QueryParam("limit") @javax.ws.rs.DefaultValue("-1") int limit) {
+		return frontendPluginContext.getRequestLogProvider().getLogList(start, limit);
 	}
 
 	@DELETE
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
 	@RequiresPermissions(FrontendPlugin.PERMISSION)
 	public void delete() {
-		frontendPluginContext.getModelLogProvider().clear();
+		frontendPluginContext.getRequestLogProvider().clear();
 	}
 
 }

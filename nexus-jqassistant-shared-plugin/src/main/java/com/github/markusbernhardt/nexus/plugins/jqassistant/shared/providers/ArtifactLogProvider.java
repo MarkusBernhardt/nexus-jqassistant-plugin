@@ -58,11 +58,13 @@ public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, Arti
 		artifactLogXO.setCreatedAt(evt.getCreatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getCreatedAt())));
 		artifactLogXO.setCreatedByAddress(evt.getCreatedByAddress());
 		artifactLogXO.setCreatedByUser(evt.getCreatedByUser());
-		artifactLogXO.setUpdatedAt(evt.getUpdatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getUpdatedAt())));
-		artifactLogXO.setUpdatedByAddress(evt.getUpdatedByAddress());
-		artifactLogXO.setUpdatedByUser(evt.getUpdatedByUser());
-		artifactLogXO.setRequestedLastAt(evt.getRequestedLastAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getRequestedLastAt())));
-		artifactLogXO.setRequestedCount(String.format("%,d", evt.getRequestedCount()));
+		artifactLogXO.setLastUpdatedAt(evt.getLastUpdatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getLastUpdatedAt())));
+		artifactLogXO.setLastUpdatedByAddress(evt.getLastUpdatedByAddress());
+		artifactLogXO.setLastUpdatedByUser(evt.getLastUpdatedByUser());
+		artifactLogXO.setLastRequestedAt(evt.getLastRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getLastRequestedAt())));
+		artifactLogXO.setLastRequestedByAddress(evt.getLastRequestedByAddress());
+		artifactLogXO.setLastRequestedByUser(evt.getLastRequestedByUser());
+		artifactLogXO.setRequestCount(String.format("%,d", evt.getRequestCount()));
 		artifactLogXO.setDescriptors(formatDescriptors(evt.getDescriptors()));
 
 		log.add(artifactLogXO);

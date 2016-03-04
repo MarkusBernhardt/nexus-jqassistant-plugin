@@ -53,11 +53,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<xsd:element name="createdAt" type="xsd:string" />
 			<xsd:element name="createdByAddress" type="xsd:string" />
 			<xsd:element name="createdByUser" type="xsd:string" />
-			<xsd:element name="updatedAt" type="xsd:string" />
-			<xsd:element name="updatedByAddress" type="xsd:string" />
-			<xsd:element name="updatedByUser" type="xsd:string" />
-			<xsd:element name="requestedLastAt" type="xsd:string" />
-			<xsd:element name="requestedCount" type="xsd:string" />
+			<xsd:element name="lastUpdatedAt" type="xsd:string" />
+			<xsd:element name="lastUpdatedByAddress" type="xsd:string" />
+			<xsd:element name="lastUpdatedByUser" type="xsd:string" />
+			<xsd:element name="lastRequestedAt" type="xsd:string" />
+			<xsd:element name="lastRequestedByAddress" type="xsd:string" />
+			<xsd:element name="lastRequestedByUser" type="xsd:string" />
+			<xsd:element name="requestCount" type="xsd:string" />
 			<xsd:element name="descriptors" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -106,8 +108,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<xsd:element name="classifier" type="xsd:string" />
 			<xsd:element name="extension" type="xsd:string" />
 			<xsd:element name="filename" type="xsd:string" />
-			<xsd:element name="requestedLastAt" type="xsd:string" />
-			<xsd:element name="requestedCount" type="xsd:string" />
+			<xsd:element name="requestedAt" type="xsd:string" />
+			<xsd:element name="requestedByAddress" type="xsd:string" />
+			<xsd:element name="requestedByUser" type="xsd:string" />
+			<xsd:element name="requestCount" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="requestLogList">

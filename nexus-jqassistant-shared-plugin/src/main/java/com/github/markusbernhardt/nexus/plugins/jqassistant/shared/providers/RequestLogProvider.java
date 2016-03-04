@@ -53,8 +53,10 @@ public class RequestLogProvider extends AbstractLogProvider<RequestLogXO, Reques
 		requestLogXO.setClassifier(evt.getClassifier());
 		requestLogXO.setExtension(evt.getExtension());
 		requestLogXO.setFilename(evt.getFilename());
-		requestLogXO.setRequestedLastAt(evt.getRequestedLastAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getRequestedLastAt())));
-		requestLogXO.setRequestedCount(String.format("%,d", evt.getRequestedCount()));
+		requestLogXO.setRequestedAt(evt.getRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getRequestedAt())));
+		requestLogXO.setRequestedByAddress(evt.getRequestedByAddress());
+		requestLogXO.setRequestedByUser(evt.getRequestedByUser());
+		requestLogXO.setRequestCount(String.format("%,d", evt.getRequestCount()));
 
 		log.add(requestLogXO);
 		trimSize();

@@ -33,16 +33,19 @@ public class ArtifactLogEvent extends AbstractEvent<Object> {
 	protected final long createdAt;
 	protected final String createdByAddress;
 	protected final String createdByUser;
-	protected final long updatedAt;
-	protected final String updatedByAddress;
-	protected final String updatedByUser;
-	protected final long requestedLastAt;
-	protected final long requestedCount;
+	protected final long lastUpdatedAt;
+	protected final String lastUpdatedByAddress;
+	protected final String lastUpdatedByUser;
+	protected final long lastRequestedAt;
+	protected final String lastRequestedByAddress;
+	protected final String lastRequestedByUser;
+	protected final long requestCount;
 	protected final String descriptors;
 
 	public ArtifactLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
-			String extension, String filename, long duration, boolean fullScan, long createdAt, String createdByAddress, String createdByUser, long updatedAt,
-			String updatedByAddress, String updatedByUser, long requestedLastAt, long requestedCount, String descriptors) {
+			String extension, String filename, long duration, boolean fullScan, long createdAt, String createdByAddress, String createdByUser,
+			long lastUpdatedAt, String lastUpdatedByAddress, String lastUpdatedByUser, long lastRequestedAt, String lastRequestedByAddress,
+			String lastRequestedByUser, long requestCount, String descriptors) {
 		super(component);
 		this.uid = uid;
 		this.repository = repository;
@@ -57,11 +60,13 @@ public class ArtifactLogEvent extends AbstractEvent<Object> {
 		this.createdAt = createdAt;
 		this.createdByAddress = createdByAddress;
 		this.createdByUser = createdByUser;
-		this.updatedAt = updatedAt;
-		this.updatedByAddress = updatedByAddress;
-		this.updatedByUser = updatedByUser;
-		this.requestedLastAt = requestedLastAt;
-		this.requestedCount = requestedCount;
+		this.lastUpdatedAt = lastUpdatedAt;
+		this.lastUpdatedByAddress = lastUpdatedByAddress;
+		this.lastUpdatedByUser = lastUpdatedByUser;
+		this.lastRequestedAt = lastRequestedAt;
+		this.lastRequestedByAddress = lastRequestedByAddress;
+		this.lastRequestedByUser = lastRequestedByUser;
+		this.requestCount = requestCount;
 		this.descriptors = descriptors;
 	}
 
@@ -117,24 +122,32 @@ public class ArtifactLogEvent extends AbstractEvent<Object> {
 		return createdByUser;
 	}
 
-	public long getUpdatedAt() {
-		return updatedAt;
+	public long getLastUpdatedAt() {
+		return lastUpdatedAt;
 	}
 
-	public String getUpdatedByAddress() {
-		return updatedByAddress;
+	public String getLastUpdatedByAddress() {
+		return lastUpdatedByAddress;
 	}
 
-	public String getUpdatedByUser() {
-		return updatedByUser;
+	public String getLastUpdatedByUser() {
+		return lastUpdatedByUser;
 	}
 
-	public long getRequestedLastAt() {
-		return requestedLastAt;
+	public long getLastRequestedAt() {
+		return lastRequestedAt;
 	}
 
-	public long getRequestedCount() {
-		return requestedCount;
+	public String getLastRequestedByAddress() {
+		return lastRequestedByAddress;
+	}
+
+	public String getLastRequestedByUser() {
+		return lastRequestedByUser;
+	}
+
+	public long getRequestCount() {
+		return requestCount;
 	}
 
 	public String getDescriptors() {
