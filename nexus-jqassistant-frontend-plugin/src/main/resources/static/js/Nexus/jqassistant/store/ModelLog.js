@@ -51,7 +51,7 @@ NX.define('Nexus.jqassistant.store.ModelLog', {
 			reader : NX.create('Ext.data.JsonReader', {
 				root : 'rows',
 				totalProperty : 'total',
-				fields : [ 'sequence', 'timestamp', 'uid', 'repository', 'groupId', 'artifactId', 'version', 'filename', 'duration' ]
+				fields : [ 'sequence', 'timestamp', 'sequence', 'timestamp', 'uid', 'repository', 'groupId', 'artifactId', 'version', 'filename', 'duration' ]
 			})
 		});
 
