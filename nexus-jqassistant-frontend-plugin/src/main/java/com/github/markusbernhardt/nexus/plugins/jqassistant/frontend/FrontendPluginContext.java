@@ -37,6 +37,11 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.ArtifactLogProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.ModelLogProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.RequestLogProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.SettingsProvider;
+
 @Named
 @Singleton
 public class FrontendPluginContext {
@@ -46,13 +51,43 @@ public class FrontendPluginContext {
 	 */
 	protected final Logger logger;
 
+	protected final ArtifactLogProvider artifactLogProvider;
+
+	protected final ModelLogProvider modelLogProvider;
+
+	protected final RequestLogProvider requestLogProvider;
+
+	protected final SettingsProvider settingsProvider;
+
 	@Inject
-	public FrontendPluginContext(Logger logger) throws Exception {
+	public FrontendPluginContext(Logger logger, ArtifactLogProvider artifactLogProvider, ModelLogProvider modelLogProvider,
+			RequestLogProvider requestLogProvider, SettingsProvider settingsProvider) {
+		super();
 		this.logger = logger;
+		this.artifactLogProvider = artifactLogProvider;
+		this.modelLogProvider = modelLogProvider;
+		this.requestLogProvider = requestLogProvider;
+		this.settingsProvider = settingsProvider;
 	}
 
 	public Logger getLogger() {
 		return logger;
+	}
+
+	public ArtifactLogProvider getArtifactLogProvider() {
+		return artifactLogProvider;
+	}
+
+	public ModelLogProvider getModelLogProvider() {
+		return modelLogProvider;
+	}
+
+	public RequestLogProvider getRequestLogProvider() {
+		return requestLogProvider;
+	}
+
+	public SettingsProvider getSettingsProvider() {
+		return settingsProvider;
 	}
 
 }

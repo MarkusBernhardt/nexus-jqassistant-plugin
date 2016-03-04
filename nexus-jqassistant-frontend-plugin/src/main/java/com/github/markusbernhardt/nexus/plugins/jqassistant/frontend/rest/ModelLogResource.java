@@ -22,11 +22,11 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
@@ -34,14 +34,14 @@ import org.sonatype.sisu.siesta.common.Resource;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPlugin;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPluginContext;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogListXO;
 
 @Named
 @Singleton
-@Path(SettingsResource.RESOURCE_URI)
-public class SettingsResource extends ComponentSupport implements Resource {
+@Path(ModelLogResource.RESOURCE_URI)
+public class ModelLogResource extends ComponentSupport implements Resource {
 
-	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/settings";
+	public static final String RESOURCE_URI = FrontendPlugin.REST_PREFIX + "/model-log";
 
 	/**
 	 * The plug in context
@@ -49,30 +49,23 @@ public class SettingsResource extends ComponentSupport implements Resource {
 	protected final FrontendPluginContext frontendPluginContext;
 
 	@Inject
-	public SettingsResource(FrontendPluginContext frontendPluginContext) {
+	public ModelLogResource(FrontendPluginContext frontendPluginContext) {
 		super();
 		this.frontendPluginContext = frontendPluginContext;
 	}
 
-	/**
-	 * Returns the actual settings.
-	 */
 	@GET
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
 	@RequiresPermissions(FrontendPlugin.PERMISSION)
-	public synchronized SettingsXO get() {
-		return frontendPluginContext.getSettingsProvider().getSettings();
-
+	public ModelLogListXO get(@QueryParam("start") @javax.ws.rs.DefaultValue("0") int start, @QueryParam("limit") @javax.ws.rs.DefaultValue("-1") int limit) {
+		return frontendPluginContext.getModelLogProvider().getLogList(start, limit);
 	}
 
-	/**
-	 * Store the actual settings
-	 */
-	@PUT
-	@Consumes({ APPLICATION_JSON, APPLICATION_XML })
+	@DELETE
+	@Produces({ APPLICATION_JSON, APPLICATION_XML })
 	@RequiresPermissions(FrontendPlugin.PERMISSION)
-	public synchronized void put(SettingsXO settings) {
-		frontendPluginContext.getSettingsProvider().setSettings(settings);
-
+	public void delete() {
+		frontendPluginContext.getModelLogProvider().clear();
 	}
+
 }
