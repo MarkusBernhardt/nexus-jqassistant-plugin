@@ -18,7 +18,7 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events;
 
 import org.sonatype.nexus.events.AbstractEvent;
 
-public class ModelEvent extends AbstractEvent<Object> {
+public class ModelLogEvent extends AbstractEvent<Object> {
 
 	protected final String uid;
 	protected final String repository;
@@ -28,7 +28,7 @@ public class ModelEvent extends AbstractEvent<Object> {
 	protected final String filename;
 	protected final long duration;
 
-	public ModelEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String filename, long duration) {
+	public ModelLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String filename, long duration) {
 		super(component);
 		this.uid = uid;
 		this.repository = repository;

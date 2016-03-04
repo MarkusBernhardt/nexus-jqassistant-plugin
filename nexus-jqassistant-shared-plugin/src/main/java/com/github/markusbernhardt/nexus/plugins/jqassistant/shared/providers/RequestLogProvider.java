@@ -25,7 +25,7 @@ import javax.inject.Singleton;
 
 import org.sonatype.nexus.events.EventSubscriber;
 
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ArtifactEvent;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.RequestLogEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.RequestLogListXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.RequestLogXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
@@ -41,7 +41,7 @@ public class RequestLogProvider extends AbstractLogProvider<RequestLogXO, Reques
 	}
 
 	@Subscribe
-	public void onArtifacted(final ArtifactEvent evt) {
+	public void onRequestLog(final RequestLogEvent evt) {
 		RequestLogXO requestLogXO = new RequestLogXO();
 		requestLogXO.setSequence(sequence.incrementAndGet());
 		requestLogXO.setTimestamp(timestampFormatter.get().format(evt.getEventDate()));

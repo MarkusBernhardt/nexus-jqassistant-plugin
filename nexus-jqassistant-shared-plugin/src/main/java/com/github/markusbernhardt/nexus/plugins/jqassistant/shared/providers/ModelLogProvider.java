@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 
 import org.sonatype.nexus.events.EventSubscriber;
 
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ArtifactEvent;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ModelLogEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogListXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
@@ -40,7 +40,7 @@ public class ModelLogProvider extends AbstractLogProvider<ModelLogXO, ModelLogLi
 	}
 
 	@Subscribe
-	public void onArtifacted(final ArtifactEvent evt) {
+	public void onModelLog(final ModelLogEvent evt) {
 		ModelLogXO modelLogXO = new ModelLogXO();
 		modelLogXO.setSequence(sequence.incrementAndGet());
 		modelLogXO.setUid(evt.getUid());

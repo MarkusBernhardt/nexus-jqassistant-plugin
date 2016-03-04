@@ -18,7 +18,7 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events;
 
 import org.sonatype.nexus.events.AbstractEvent;
 
-public class ArtifactEvent extends AbstractEvent<Object> {
+public class ArtifactLogEvent extends AbstractEvent<Object> {
 
 	protected final String uid;
 	protected final String repository;
@@ -40,7 +40,7 @@ public class ArtifactEvent extends AbstractEvent<Object> {
 	protected final long requestedCount;
 	protected final String descriptors;
 
-	public ArtifactEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
+	public ArtifactLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
 			String extension, String filename, long duration, boolean fullScan, long createdAt, String createdByAddress, String createdByUser, long updatedAt,
 			String updatedByAddress, String updatedByUser, long requestedLastAt, long requestedCount, String descriptors) {
 		super(component);
