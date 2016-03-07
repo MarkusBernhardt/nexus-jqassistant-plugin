@@ -53,16 +53,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<groupId>com.buschmais.jqassistant.core</groupId>
 			<artifactId>jqassistant.core.plugin</artifactId>
 		</dependency>
-<!-- 
 		<dependency>
 			<groupId>com.buschmais.jqassistant.plugin</groupId>
 			<artifactId>jqassistant.plugin.maven3</artifactId>
 		</dependency>
+<!-- 
 		<dependency>
 			<groupId>com.buschmais.jqassistant.scm</groupId>
 			<artifactId>jqassistant.scm.neo4jserver</artifactId>
 		</dependency>
- -->		
+ -->
 	</dependencies>
 
 	<build>
