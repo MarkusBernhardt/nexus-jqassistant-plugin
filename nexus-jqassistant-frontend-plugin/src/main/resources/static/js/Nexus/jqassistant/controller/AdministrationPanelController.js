@@ -120,6 +120,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				var requestLogView = Ext.getCmp('nx-jqassistant-view-request-log');
 
 				var settingsFullScanField = Ext.getCmp('nx-jqassistant-view-settings-form-full-scan');
+				var settingsCommandQueueSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-command-queue-size');
 				var settingsModelLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-model-log-size');
 				var settingsArtifactLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-artifact-log-size');
 				var settingsRequestLogSizeField = Ext.getCmp('nx-jqassistant-view-settings-form-request-log-size');
@@ -129,6 +130,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 					tabPanel.unhideTabStripItem(requestLogView);
 
 					settingsFullScanField.setDisabled(false);
+					settingsCommandQueueSizeField.setDisabled(false);
 					settingsModelLogSizeField.setDisabled(false);
 					settingsArtifactLogSizeField.setDisabled(false);
 					settingsRequestLogSizeField.setDisabled(false);
@@ -138,6 +140,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 					tabPanel.hideTabStripItem(requestLogView);
 
 					settingsFullScanField.setDisabled(true);
+					settingsCommandQueueSizeField.setDisabled(true);
 					settingsModelLogSizeField.setDisabled(true);
 					settingsArtifactLogSizeField.setDisabled(true);
 					settingsRequestLogSizeField.setDisabled(true);

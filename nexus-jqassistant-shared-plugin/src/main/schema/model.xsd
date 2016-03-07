@@ -28,6 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<xsd:sequence>
 			<xsd:element name="activated" type="xsd:boolean" />
 			<xsd:element name="fullScan" type="xsd:boolean" />
+			<xsd:element name="commandQueueSize" type="xsd:int" />
 			<xsd:element name="modelLogSize" type="xsd:int" />
 			<xsd:element name="artifactLogSize" type="xsd:int" />
 			<xsd:element name="requestLogSize" type="xsd:int" />

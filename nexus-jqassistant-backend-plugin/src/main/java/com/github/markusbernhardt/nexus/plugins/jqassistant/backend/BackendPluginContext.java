@@ -36,6 +36,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
+import org.sonatype.nexus.configuration.application.ApplicationDirectories;
+
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.SettingsProvider;
 
 @Named
 @Singleton
@@ -46,13 +49,33 @@ public class BackendPluginContext {
 	 */
 	protected final Logger logger;
 
+	/**
+	 * The Nexus application directory configuration
+	 */
+	protected final ApplicationDirectories applicationDirectories;
+
+	/**
+	 * The settings provider instance
+	 */
+	protected final SettingsProvider settingsProvider;
+
 	@Inject
-	public BackendPluginContext(Logger logger) throws Exception {
+	public BackendPluginContext(Logger logger, ApplicationDirectories applicationDirectories, SettingsProvider settingsProvider) throws Exception {
 		this.logger = logger;
+		this.applicationDirectories = applicationDirectories;
+		this.settingsProvider = settingsProvider;
 	}
 
 	public Logger getLogger() {
 		return logger;
+	}
+
+	public ApplicationDirectories getApplicationDirectories() {
+		return applicationDirectories;
+	}
+
+	public SettingsProvider getSettingsProvider() {
+		return settingsProvider;
 	}
 
 }

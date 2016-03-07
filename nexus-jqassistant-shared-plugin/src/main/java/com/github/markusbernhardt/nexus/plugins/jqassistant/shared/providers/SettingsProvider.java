@@ -74,6 +74,10 @@ public class SettingsProvider {
 				settingsNew.setArtifactLogSize(settingsOld.getArtifactLogSize());
 				settingsNew.setRequestLogSize(settingsOld.getRequestLogSize());
 			}
+			
+			if (settingsNew.getCommandQueueSize() < 100) {
+				settingsNew.setCommandQueueSize(100);
+			}
 
 			JAXBContext jaxbContext = JAXBContext.newInstance(SettingsXO.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -92,12 +96,17 @@ public class SettingsProvider {
 			if (settingsFile.exists()) {
 				// Settings file does exist => read
 				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				return (SettingsXO) jaxbUnmarshaller.unmarshal(settingsFile);
+				SettingsXO settings = (SettingsXO) jaxbUnmarshaller.unmarshal(settingsFile);
+				if (settings.getCommandQueueSize() < 100) {
+					settings.setCommandQueueSize(100);
+				}
+				return settings;
 			} else {
 				// Settings file does not exist => create
 				SettingsXO settings = new SettingsXO();
 				settings.setActivated(false);
 				settings.setFullScan(false);
+				settings.setCommandQueueSize(10000);
 				settings.setModelLogSize(10000);
 				settings.setArtifactLogSize(10000);
 				settings.setRequestLogSize(10000);

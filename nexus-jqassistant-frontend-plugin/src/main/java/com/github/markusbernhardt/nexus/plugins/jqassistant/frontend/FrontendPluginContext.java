@@ -46,9 +46,6 @@ import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.Set
 @Singleton
 public class FrontendPluginContext {
 
-	/**
-	 * The Logger to use
-	 */
 	protected final Logger logger;
 
 	protected final ArtifactLogProvider artifactLogProvider;

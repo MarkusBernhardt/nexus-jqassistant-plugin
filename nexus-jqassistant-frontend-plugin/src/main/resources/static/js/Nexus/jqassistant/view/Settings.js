@@ -80,6 +80,15 @@ NX.define('Nexus.jqassistant.view.Settings', {
 						inputValue : 'true',
 						itemCls : 'required-field',
 						allowBlank : false
+					}, {
+						id : 'nx-jqassistant-view-settings-form-command-queue-size',
+						xtype : 'numberfield',
+						fieldLabel : 'Command queue size',
+						helpText : 'The maximum number of commands to cache before blocking the internal queue. (Minimum is 100)',
+						name : 'commandQueueSize',
+						anchor : Sonatype.view.FIELD_OFFSET_WITH_SCROLL,
+						allowBlank : false,
+						itemCls : 'required-field'
 					} ]
 				}, {
 					xtype : 'fieldset',
