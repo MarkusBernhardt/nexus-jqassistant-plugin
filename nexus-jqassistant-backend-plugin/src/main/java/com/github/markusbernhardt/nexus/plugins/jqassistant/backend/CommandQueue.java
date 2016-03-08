@@ -25,9 +25,6 @@ import javax.inject.Singleton;
 
 import org.sonatype.nexus.events.EventSubscriber;
 
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
-import com.google.common.eventbus.Subscribe;
-
 @Named
 @Singleton
 public class CommandQueue implements Runnable, EventSubscriber {
@@ -64,18 +61,6 @@ public class CommandQueue implements Runnable, EventSubscriber {
 		this.queue = new ArrayBlockingQueue<>(commandQueueSize);
 	}
 
-	@Subscribe
-	public void onSettingsChange(SettingsEvent evt) {
-		if (stop) {
-			return;
-		}
-
-		int newCommandQueueSize = evt.getSettingsNew().getCommandQueueSize();
-		if (commandQueueSize != newCommandQueueSize) {
-			enqueueCommand(new ResizeCommand(newCommandQueueSize));
-		}
-	}
-
 	@Override
 	public void run() {
 		while (!stop) {
@@ -90,6 +75,7 @@ public class CommandQueue implements Runnable, EventSubscriber {
 	}
 
 	public void start() {
+		stop = false;
 		thread = new Thread(this);
 		thread.setContextClassLoader(this.getClass().getClassLoader());
 		thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -115,6 +101,12 @@ public class CommandQueue implements Runnable, EventSubscriber {
 
 	}
 
+	public void resize(int newCommandQueueSize) {
+		if (commandQueueSize != newCommandQueueSize) {
+			enqueueCommand(new ResizeCommand(newCommandQueueSize));
+		}
+	}
+
 	public void enqueueCommand(Command command) {
 		while (command != null) {
 			try {
@@ -125,8 +117,15 @@ public class CommandQueue implements Runnable, EventSubscriber {
 		}
 	}
 
-	protected void stopThread() {
+	public int getCommandQueueSize() {
+		return commandQueueSize;
+	}
+
+	protected void stopThreadSyncPart() {
 		stop = true;
+	}
+
+	protected void stopThreadAsyncPart() {
 		thread.interrupt();
 
 		boolean flag = true;
@@ -142,10 +141,11 @@ public class CommandQueue implements Runnable, EventSubscriber {
 	protected class StopCommand implements Command {
 		@Override
 		public void execute() {
+			stopThreadSyncPart();
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					stopThread();
+					stopThreadAsyncPart();
 				}
 			});
 			t.start();
@@ -162,21 +162,20 @@ public class CommandQueue implements Runnable, EventSubscriber {
 
 		@Override
 		public void execute() {
+			stopThreadSyncPart();
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					stopThread();
+					stopThreadAsyncPart();
 					BlockingQueue<Command> queueOld = queue;
 					commandQueueSize = newCommandQueueSize;
 					queue = new ArrayBlockingQueue<>(commandQueueSize);
-					stop = false;
 					start();
 					for (Command command : queueOld) {
 						enqueueCommand(command);
 					}
 				}
 			});
-			t.setContextClassLoader(thread.getContextClassLoader());
 			t.start();
 		}
 	}

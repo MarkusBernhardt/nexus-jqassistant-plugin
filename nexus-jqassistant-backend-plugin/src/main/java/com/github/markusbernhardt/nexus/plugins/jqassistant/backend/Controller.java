@@ -27,6 +27,7 @@ import org.sonatype.nexus.proxy.events.NexusStoppedEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStart;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStop;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.StoreProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.google.common.eventbus.Subscribe;
 
 @Named
@@ -75,5 +76,20 @@ public class Controller implements EventSubscriber {
 
 		// always stop the command queue
 		commandQueue.stop();
+	}
+
+	@Subscribe
+	public void onSettingsChange(final SettingsEvent evt) {
+		if (evt.getSettingsNew().isActivated() && !evt.getSettingsOld().isActivated()) {
+			// deactivated => activated => start the neo4j database
+			commandQueue.enqueueCommand(new StoreProviderStart(backendPluginContext, storeProvider));
+		} else if (!evt.getSettingsNew().isActivated() && evt.getSettingsOld().isActivated()) {
+			// activated => deactivated => stop the neo4j database
+			commandQueue.enqueueCommand(new StoreProviderStop(storeProvider));
+		}
+		// Check command queue size
+		if(evt.getSettingsNew().getCommandQueueSize() != evt.getSettingsOld().getCommandQueueSize()) {
+			commandQueue.resize(evt.getSettingsNew().getCommandQueueSize());
+		}
 	}
 }
