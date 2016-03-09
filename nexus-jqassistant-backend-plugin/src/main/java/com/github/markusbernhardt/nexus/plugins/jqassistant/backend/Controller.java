@@ -23,9 +23,12 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.events.EventSubscriber;
 import org.sonatype.nexus.proxy.events.NexusInitializedEvent;
 import org.sonatype.nexus.proxy.events.NexusStoppedEvent;
+import org.sonatype.nexus.proxy.events.RepositoryItemEventCache;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.ScanStorageItemCommand;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStart;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStop;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.PluginRepositoryProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.StoreProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.google.common.eventbus.Subscribe;
@@ -45,14 +48,21 @@ public class Controller implements EventSubscriber {
 	protected final StoreProvider storeProvider;
 
 	/**
+	 * The plugin provider
+	 */
+	protected final PluginRepositoryProvider pluginRepositoryProvider;
+
+	/**
 	 * The worker to execute the pending commands
 	 */
 	protected final CommandQueue commandQueue;
 
 	@Inject
-	public Controller(BackendPluginContext backendPluginContext, StoreProvider storeProvider, CommandQueue commandQueue) {
+	public Controller(BackendPluginContext backendPluginContext, StoreProvider storeProvider, PluginRepositoryProvider pluginRepositoryProvider,
+			CommandQueue commandQueue) {
 		this.backendPluginContext = backendPluginContext;
 		this.storeProvider = storeProvider;
+		this.pluginRepositoryProvider = pluginRepositoryProvider;
 		this.commandQueue = commandQueue;
 	}
 
@@ -88,8 +98,19 @@ public class Controller implements EventSubscriber {
 			commandQueue.enqueueCommand(new StoreProviderStop(storeProvider));
 		}
 		// Check command queue size
-		if(evt.getSettingsNew().getCommandQueueSize() != evt.getSettingsOld().getCommandQueueSize()) {
+		if (evt.getSettingsNew().getCommandQueueSize() != evt.getSettingsOld().getCommandQueueSize()) {
 			commandQueue.resize(evt.getSettingsNew().getCommandQueueSize());
 		}
 	}
+
+	@Subscribe
+	public void onItemCache(final RepositoryItemEventCache evt) {
+		if (!backendPluginContext.getSettingsProvider().getSettings().isActivated()) {
+			return;
+		}
+
+		commandQueue
+				.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(), evt.getItemContext()));
+	}
+
 }

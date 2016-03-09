@@ -18,7 +18,29 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors
 
 import com.buschmais.jqassistant.plugin.maven3.api.model.MavenDescriptor;
 import com.buschmais.xo.neo4j.api.annotation.Label;
+import com.buschmais.xo.neo4j.api.annotation.Property;
 
-@Label(value = "Release")
-public interface NexusMavenReleaseDescriptor extends NexusDescriptor, MavenDescriptor {
+@Label(value = "Snapshot")
+public interface MavenSnapshotDescriptor extends MavenDescriptor {
+
+	/**
+	 * The timestamp of this snapshot.
+	 * 
+	 * @return the timestamp of this snapshot as long.
+	 */
+	@Property("timestamp")
+	long getTimestamp();
+
+	void setTimestamp(long timestamp);
+
+	/**
+	 * The build number of this snapshot.
+	 * 
+	 * @return the buildnumber of this snapshot as int.
+	 */
+	@Property("buildnumber")
+	int getSnapshotBuildNumber();
+
+	void setSnapshotBuildNumber(int buildnumber);
+
 }

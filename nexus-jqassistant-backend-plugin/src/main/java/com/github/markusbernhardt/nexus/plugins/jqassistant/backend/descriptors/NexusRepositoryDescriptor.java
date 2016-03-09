@@ -16,31 +16,53 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors;
 
-import com.buschmais.jqassistant.plugin.maven3.api.model.MavenDescriptor;
+import java.util.List;
+
+import com.buschmais.jqassistant.core.store.api.model.Descriptor;
+import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
+import com.buschmais.xo.neo4j.api.annotation.Relation;
 
-@Label(value = "Snapshot")
-public interface NexusMavenSnapshotDescriptor extends NexusDescriptor, MavenDescriptor {
-
-	/**
-	 * The timestamp of this snapshot.
-	 * 
-	 * @return the timestamp of this snapshot as long.
-	 */
-	@Property("timestamp")
-	long getTimestamp();
-
-	void setTimestamp(long timestamp);
+@Label(value = "Repository")
+public interface NexusRepositoryDescriptor extends Descriptor, NexusDescriptor {
 
 	/**
-	 * The build number of this snapshot.
-	 * 
-	 * @return the buildnumber of this snapshot as int.
+	 * The contained artifacts.
 	 */
-	@Property("buildnumber")
-	int getSnapshotBuildNumber();
+	@Relation("CONTAINS_ITEM")
+	List<NexusStorageItemDescriptor> getContainedItems();
 
-	void setSnapshotBuildNumber(int buildnumber);
+	/**
+	 * The repository id.
+	 * 
+	 * @return the repository id.
+	 */
+	@Indexed
+	String getId();
+
+	/**
+	 * Set the repository id.
+	 * 
+	 * @param url
+	 *            the repository id.
+	 */
+	void setId(String id);
+
+	/**
+	 * The last full scan.
+	 * 
+	 * @return the full scan.
+	 */
+	@Property("lastFullScan")
+	long getLastFullScan();
+
+	/**
+	 * Set the full scan.
+	 * 
+	 * @param lastFullScan
+	 *            the full scan.
+	 */
+	void setLastFullScan(long lastFullScan);
 
 }

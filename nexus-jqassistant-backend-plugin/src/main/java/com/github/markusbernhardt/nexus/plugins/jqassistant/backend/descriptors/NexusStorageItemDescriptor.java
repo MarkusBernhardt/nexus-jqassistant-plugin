@@ -16,11 +16,13 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors;
 
+import com.buschmais.jqassistant.core.store.api.model.FullQualifiedNameDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 
-@Label(value = "StorageItem")
-public interface NexusStorageItemDescriptor extends NexusDescriptor {
+@Label(value = "StorageItem", usingIndexedPropertyOf = FullQualifiedNameDescriptor.class)
+public interface NexusStorageItemDescriptor extends NexusDescriptor, ArtifactFileDescriptor {
 
 	@Property("createdAt")
 	long getCreatedAt();
