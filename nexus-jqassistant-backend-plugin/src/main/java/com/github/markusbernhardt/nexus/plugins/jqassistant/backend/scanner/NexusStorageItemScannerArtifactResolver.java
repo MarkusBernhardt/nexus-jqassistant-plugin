@@ -45,18 +45,21 @@ public class NexusStorageItemScannerArtifactResolver implements ArtifactResolver
 			artifactCoordinates = modelCoordinates;
 		} else if (PluginCoordinates.class.isAssignableFrom(artifactCoordinates.getClass())) {
 			repositoryId = "plugins";
+			artifactCoordinates = new CoordinatesUnknown(artifactCoordinates);
 		}
 
 		if (repositoryId == null) {
 			String modelId = MavenArtifactHelper.getId(modelCoordinates);
-			MavenRepository mavenRepository = nexusStorageItemScannerContext.getArtifactToRepositoryMapping().get(modelId);
+			MavenRepository mavenRepository = nexusStorageItemScannerContext.getArtifactToRepositoryMapping()
+					.get(modelId);
 			if (mavenRepository != null) {
 				repositoryId = mavenRepository.getId();
 			}
 		}
 
 		if (repositoryId == null) {
-			StorageFileItem modelItem = nexusStorageItemScannerContext.getWorkspaceReader().findStorageItem(Util.toGav(modelCoordinates));
+			StorageFileItem modelItem = nexusStorageItemScannerContext.getWorkspaceReader()
+					.findStorageItem(Util.toGav(modelCoordinates));
 			if (modelItem != null) {
 				MavenRepository mavenRepository = (MavenRepository) modelItem.getRepositoryItemUid().getRepository();
 				if (mavenRepository != null) {
@@ -69,7 +72,8 @@ public class NexusStorageItemScannerArtifactResolver implements ArtifactResolver
 			repositoryId = "provided";
 		}
 
-		return nexusStorageItemScannerContext.getOrCreateArtifactDescriptor(scannerContext.getStore(), repositoryId, artifactCoordinates);
+		return nexusStorageItemScannerContext.getOrCreateArtifactDescriptor(scannerContext.getStore(), repositoryId,
+				artifactCoordinates);
 	}
 
 }
