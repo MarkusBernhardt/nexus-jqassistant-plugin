@@ -54,7 +54,8 @@ public class SettingsProvider {
 	@Inject
 	SettingsProvider(SharedPluginContext pluginContext) {
 		this.pluginContext = pluginContext;
-		this.settingsFile = new File(pluginContext.getApplicationConfiguration().getConfigurationDirectory(), SETTINGS_FILENAME);
+		this.settingsFile = new File(pluginContext.getApplicationConfiguration().getConfigurationDirectory(),
+				SETTINGS_FILENAME);
 		this.settings = loadOrCreateSettingsXO();
 	}
 
@@ -70,11 +71,12 @@ public class SettingsProvider {
 			if (!settingsOld.isActivated()) {
 				// Preserve values of disabled input fields
 				settingsNew.setFullScan(settingsOld.isFullScan());
+				settingsNew.setCommandQueueSize(settingsOld.getCommandQueueSize());
 				settingsNew.setModelLogSize(settingsOld.getModelLogSize());
 				settingsNew.setArtifactLogSize(settingsOld.getArtifactLogSize());
 				settingsNew.setRequestLogSize(settingsOld.getRequestLogSize());
 			}
-			
+
 			if (settingsNew.getCommandQueueSize() < 100) {
 				settingsNew.setCommandQueueSize(100);
 			}
