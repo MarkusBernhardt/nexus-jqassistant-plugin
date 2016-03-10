@@ -68,14 +68,20 @@ public class ScanStorageItemCommand implements Command {
 	 */
 	protected final Map<String, Object> storageItemContext;
 
+	/**
+	 * The scope for the Nexus storage item scanner
+	 */
+	protected final NexusScope scope;
+
 	public ScanStorageItemCommand(BackendPluginContext backendPluginContext, StoreProvider storeProvider, PluginRepositoryProvider pluginRepositoryProvider,
-			StorageItem storageItem, Map<String, Object> storageItemContext) {
+			StorageItem storageItem, Map<String, Object> storageItemContext, NexusScope scope) {
 		super();
 		this.backendPluginContext = backendPluginContext;
 		this.storeProvider = storeProvider;
 		this.pluginRepositoryProvider = pluginRepositoryProvider;
 		this.storageItem = storageItem;
 		this.storageItemContext = storageItemContext;
+		this.scope = scope;
 	}
 
 	@Override
@@ -97,7 +103,7 @@ public class ScanStorageItemCommand implements Command {
 
 			storeProvider.getStore().beginTransaction();
 			try {
-				scanner.scan(storageItem, storageFilePath, NexusScope.SCAN);
+				scanner.scan(storageItem, storageFilePath, scope);
 			} finally {
 				storeProvider.getStore().commitTransaction();
 			}

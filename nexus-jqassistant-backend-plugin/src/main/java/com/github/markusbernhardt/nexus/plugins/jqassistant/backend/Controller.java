@@ -24,12 +24,14 @@ import org.sonatype.nexus.events.EventSubscriber;
 import org.sonatype.nexus.proxy.events.NexusInitializedEvent;
 import org.sonatype.nexus.proxy.events.NexusStoppedEvent;
 import org.sonatype.nexus.proxy.events.RepositoryItemEventCache;
+import org.sonatype.nexus.proxy.events.RepositoryItemEventRetrieve;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.ScanStorageItemCommand;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStart;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStop;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.PluginRepositoryProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.StoreProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner.NexusScope;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.SettingsEvent;
 import com.google.common.eventbus.Subscribe;
 
@@ -109,8 +111,18 @@ public class Controller implements EventSubscriber {
 			return;
 		}
 
-		commandQueue
-				.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(), evt.getItemContext()));
+		commandQueue.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(),
+				evt.getItemContext(), NexusScope.SCAN));
+	}
+
+	@Subscribe
+	public void onItemRetrieve(final RepositoryItemEventRetrieve evt) {
+		if (!backendPluginContext.getSettingsProvider().getSettings().isActivated()) {
+			return;
+		}
+
+		commandQueue.enqueueCommand(
+				new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(), evt.getItemContext(), NexusScope.LOG));
 	}
 
 }
