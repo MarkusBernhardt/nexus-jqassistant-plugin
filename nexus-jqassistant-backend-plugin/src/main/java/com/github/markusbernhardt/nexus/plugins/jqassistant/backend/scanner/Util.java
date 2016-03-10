@@ -34,18 +34,17 @@ import org.sonatype.nexus.proxy.maven.uid.IsMavenRepositoryMetadataAttribute;
 import org.sonatype.nexus.proxy.repository.Repository;
 import org.sonatype.nexus.proxy.storage.local.fs.DefaultFSLocalRepositoryStorage;
 
-import com.buschmais.jqassistant.core.scanner.api.Scope;
 import com.buschmais.jqassistant.plugin.maven3.api.artifact.Coordinates;
 
 public class Util {
 
-	public static Scope detectScope(StorageItem item) {
+	public static boolean checkStorageItemIsMavenArtifact(StorageItem item) {
 		Repository repository = item.getRepositoryItemUid().getRepository();
 		if (repository.getRepositoryKind().isFacetAvailable(MavenRepository.class)
 				&& repository.getRepositoryContentClass().getId().equals(Maven2ContentClass.ID)) {
-			return NexusScope.MAVEN;
+			return true;
 		}
-		return NexusScope.GENERIC;
+		return false;
 	}
 
 	public static boolean checkStorageItemIsRelevantMavenArtifact(StorageItem item) {
@@ -78,14 +77,14 @@ public class Util {
 	public static Gav toGav(Artifact artifact) {
 		// fix for bug in M2GavCalculator
 		String classifier = StringUtils.isEmpty(artifact.getClassifier()) ? null : artifact.getClassifier();
-		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier,
-				artifact.getExtension(), null, null, null, false, null, false, null);
+		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier, artifact.getExtension(), null, null, null, false,
+				null, false, null);
 	}
 
 	public static Gav toGav(Coordinates coordinates) {
 		try {
-			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(),
-					coordinates.getClassifier(), coordinates.getType(), null, null, null, false, null, false, null);
+			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(), coordinates.getClassifier(), coordinates.getType(), null,
+					null, null, false, null, false, null);
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());
 			throw e;
@@ -147,8 +146,7 @@ public class Util {
 	public static File getFileFromStorageFileItem(StorageFileItem storageFileItem) throws LocalStorageException {
 		Repository repository = storageFileItem.getRepositoryItemUid().getRepository();
 		DefaultFSLocalRepositoryStorage localStorage = (DefaultFSLocalRepositoryStorage) repository.getLocalStorage();
-		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(),
-				storageFileItem.getResourceStoreRequest());
+		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(), storageFileItem.getResourceStoreRequest());
 	}
 
 }

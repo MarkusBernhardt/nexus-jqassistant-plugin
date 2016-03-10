@@ -62,7 +62,7 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 
 	@Override
 	public boolean accepts(StorageItem item, String path, Scope scope) throws IOException {
-		if (scope != null && !NexusScope.class.isAssignableFrom(scope.getClass())) {
+		if (scope == null || !NexusScope.class.isAssignableFrom(scope.getClass())) {
 			return false;
 		}
 		return true;
@@ -70,19 +70,17 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 
 	@Override
 	public NexusMavenArtifactDescriptor scan(StorageItem item, String path, Scope scope, Scanner scanner) throws IOException {
-		if (scope == null) {
-			scope = Util.detectScope(item);
-		}
-
-		if (NexusScope.MAVEN.equals(scope)) {
-			return scanMaven(item, path, scanner);
-		} else if (NexusScope.GENERIC.equals(scope)) {
-			return scanGeneric(item, path, scanner);
+		if (Util.checkStorageItemIsMavenArtifact(item)) {
+			if (NexusScope.SCAN.equals(scope)) {
+				return scanMaven(item, path, scanner);
+			} else if (NexusScope.LOG.equals(scope)) {
+				return logMaven(item, path, scanner);
+			}
 		}
 		return null;
 	}
 
-	public NexusMavenArtifactDescriptor scanGeneric(StorageItem item, String path, Scanner scanner) throws IOException {
+	public NexusMavenArtifactDescriptor logMaven(StorageItem item, String path, Scanner scanner) throws IOException {
 		return null;
 	}
 

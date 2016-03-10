@@ -21,7 +21,7 @@ import com.buschmais.jqassistant.core.scanner.api.Scope;
 
 public enum NexusScope implements Scope {
 
-	MAVEN {
+	SCAN {
 		@Override
 		public void onEnter(ScannerContext context) {
 		}
@@ -30,7 +30,7 @@ public enum NexusScope implements Scope {
 		public void onLeave(ScannerContext context) {
 		}
 	},
-	GENERIC {
+	LOG {
 		@Override
 		public void onEnter(ScannerContext context) {
 		}

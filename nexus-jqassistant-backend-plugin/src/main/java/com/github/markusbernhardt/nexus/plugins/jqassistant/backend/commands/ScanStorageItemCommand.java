@@ -37,6 +37,7 @@ import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.BackendPlugi
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.Command;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.PluginRepositoryProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers.StoreProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner.NexusScope;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner.NexusStorageItemScannerContext;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner.Util;
 
@@ -96,7 +97,7 @@ public class ScanStorageItemCommand implements Command {
 
 			storeProvider.getStore().beginTransaction();
 			try {
-				scanner.scan(storageItem, storageFilePath, null);
+				scanner.scan(storageItem, storageFilePath, NexusScope.SCAN);
 			} finally {
 				storeProvider.getStore().commitTransaction();
 			}
