@@ -164,9 +164,6 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 			File artifactFile = Util.getFileFromStorageFileItem(artifactItem);
 			CoordinatesArtifact artifactCoordinates = new CoordinatesArtifact(gav);
 
-			String s1 = item.getRepositoryItemUid().getKey();
-			String s2 = item.getRepositoryItemUid().getPath();
-
 			NexusMavenArtifactDescriptor artifactDescriptor = null;
 			NexusMavenArtifactDescriptor artifactDescriptorBackup = nexusStorageItemScannerContext.getMavenArtifactDescriptor(store, repositoryId,
 					artifactCoordinates);

@@ -78,14 +78,14 @@ public class Util {
 	public static Gav toGav(Artifact artifact) {
 		// fix for bug in M2GavCalculator
 		String classifier = StringUtils.isEmpty(artifact.getClassifier()) ? null : artifact.getClassifier();
-		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier, artifact.getExtension(), null, null, null, false,
-				null, false, null);
+		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier,
+				artifact.getExtension(), null, null, null, false, null, false, null);
 	}
 
 	public static Gav toGav(Coordinates coordinates) {
 		try {
-			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(), coordinates.getClassifier(), coordinates.getType(), null,
-					null, null, false, null, false, null);
+			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(),
+					coordinates.getClassifier(), coordinates.getType(), null, null, null, false, null, false, null);
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());
 			throw e;
@@ -147,7 +147,8 @@ public class Util {
 	public static File getFileFromStorageFileItem(StorageFileItem storageFileItem) throws LocalStorageException {
 		Repository repository = storageFileItem.getRepositoryItemUid().getRepository();
 		DefaultFSLocalRepositoryStorage localStorage = (DefaultFSLocalRepositoryStorage) repository.getLocalStorage();
-		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(), storageFileItem.getResourceStoreRequest());
+		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(),
+				storageFileItem.getResourceStoreRequest());
 	}
 
 }
