@@ -48,9 +48,9 @@ public class Util {
 		return NexusScope.GENERIC;
 	}
 
-	public static boolean checkScopeMaven(StorageItem item) {
+	public static boolean checkStorageItemIsRelevantMavenArtifact(StorageItem item) {
 
-		if (item == null) {
+		if (item == null || item.isVirtual()) {
 			return false;
 		}
 

@@ -87,7 +87,7 @@ public class NexusStorageItemScannerWorkspaceReader implements WorkspaceReader {
 				StorageFileItem storageFileItem = repository.getArtifactStoreHelper().retrieveArtifact(gavRequest);
 
 				// Save the repository mapping
-				nexusStorageItemScannerContext.getArtifactToRepositoryMapping().put(MavenArtifactHelper.getId(new CoordinatesArtifact(gav)), repository);
+				nexusStorageItemScannerContext.getArtifactToRepositoryMapping().put(MavenArtifactHelper.getId(new CoordinatesModel(gav)), repository);
 
 				return storageFileItem;
 			} catch (IOException | AccessDeniedException | IllegalOperationException | ItemNotFoundException e) {
