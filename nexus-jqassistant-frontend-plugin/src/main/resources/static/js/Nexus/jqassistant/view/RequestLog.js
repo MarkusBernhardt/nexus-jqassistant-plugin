@@ -117,9 +117,9 @@ NX.define('Nexus.jqassistant.view.RequestLog', {
 					dataIndex : 'groupId',
 					width : 200
 				}, {
-					id : 'requestId',
-					header : 'RequestId',
-					dataIndex : 'requestId',
+					id : 'artifactId',
+					header : 'ArtifactId',
+					dataIndex : 'artifactId',
 					width : 200
 				}, {
 					id : 'classifier',
