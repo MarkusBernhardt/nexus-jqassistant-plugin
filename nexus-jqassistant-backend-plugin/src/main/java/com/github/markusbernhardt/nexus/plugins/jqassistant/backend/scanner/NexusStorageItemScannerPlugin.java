@@ -55,6 +55,7 @@ import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors.
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors.NexusStorageItemDescriptor;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ArtifactLogEvent;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.ModelLogEvent;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events.RequestLogEvent;
 
 public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<StorageItem, NexusStorageItemDescriptor> {
 
@@ -69,8 +70,13 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 	}
 
 	@Override
-	public NexusMavenArtifactDescriptor scan(StorageItem item, String path, Scope scope, Scanner scanner) throws IOException {
+	public NexusMavenArtifactDescriptor scan(StorageItem item, String path, Scope scope, Scanner scanner)
+			throws IOException {
 		if (Util.checkStorageItemIsMavenArtifact(item)) {
+			if (!Util.checkStorageItemIsRelevantMavenArtifact(item)) {
+				return null;
+			}
+
 			if (NexusScope.SCAN.equals(scope)) {
 				return scanMaven(item, path, scanner);
 			} else if (NexusScope.LOG.equals(scope)) {
@@ -81,17 +87,76 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 	}
 
 	public NexusMavenArtifactDescriptor logMaven(StorageItem item, String path, Scanner scanner) throws IOException {
-		return null;
-	}
+		ScannerContext context = scanner.getContext();
+		Store store = context.getStore();
+		NexusStorageItemScannerContext nexusStorageItemScannerContext = context
+				.peek(NexusStorageItemScannerContext.class);
+		BackendPluginContext backendPluginContext = nexusStorageItemScannerContext.getBackendPluginContext();
+		Logger logger = backendPluginContext.getLogger();
 
-	protected NexusMavenArtifactDescriptor scanMaven(StorageItem item, String path, Scanner scanner) throws IOException {
-		if (!Util.checkStorageItemIsRelevantMavenArtifact(item)) {
+		MavenRepository repository = item.getRepositoryItemUid().getRepository().adaptToFacet(MavenRepository.class);
+
+		Gav gav = repository.getGavCalculator().pathToGav(item.getRepositoryItemUid().getPath());
+		if (gav == null) {
+			if (logger.isWarnEnabled()) {
+				logger.warn(String.format("Could not determine GAV for StorageItem '%s'.",
+						item.getRepositoryItemUid().getKey()));
+			}
 			return null;
 		}
 
+		String repositoryId = repository.getId();
+		NexusMavenRepositoryDescriptor repositoryDescriptor = nexusStorageItemScannerContext
+				.getMavenRepositoryDescriptor(store, repositoryId);
+
+		CoordinatesArtifact artifactCoordinates = new CoordinatesArtifact(gav);
+		NexusMavenArtifactDescriptor artifactDescriptorBackup = nexusStorageItemScannerContext
+				.getMavenArtifactDescriptor(store, repositoryId, artifactCoordinates);
+
+		StorageFileItem artifactItem = (StorageFileItem) item;
+		File artifactFile = Util.getFileFromStorageFileItem(artifactItem);
+		String artifactPath = artifactFile.getAbsolutePath();
+		
+		NexusMavenArtifactDescriptor artifactDescriptor = null;
+		if (artifactDescriptorBackup == null) {
+			artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class, item.getRepositoryItemUid().getKey());
+
+			MavenArtifactHelper.setCoordinates(artifactDescriptor, artifactCoordinates);
+			artifactDescriptor.setCreatedAt(System.currentTimeMillis());
+			artifactDescriptor.setCreatedByAddress(nexusStorageItemScannerContext.getRequestedByAddress());
+			artifactDescriptor.setCreatedByUser(nexusStorageItemScannerContext.getRequestedByUser());
+			artifactDescriptor.setLastUpdatedAt(artifactDescriptor.getCreatedAt());
+			artifactDescriptor.setLastUpdatedByAddress(nexusStorageItemScannerContext.getRequestedByAddress());
+			artifactDescriptor.setLastUpdatedByUser(nexusStorageItemScannerContext.getRequestedByUser());
+			artifactDescriptor.setFileName(artifactPath);
+
+			artifactDescriptor = markReleaseOrSnaphot(artifactDescriptor, NexusMavenArtifactDescriptor.class, gav,
+					store);
+			repositoryDescriptor.getContainedItems().add(artifactDescriptor);
+		} else {
+			artifactDescriptor = artifactDescriptorBackup;
+		}
+
+		artifactDescriptor.setLastRequestedAt(System.currentTimeMillis());
+		artifactDescriptor.setLastRequestedByAddress(nexusStorageItemScannerContext.getRequestedByAddress());
+		artifactDescriptor.setLastRequestedByUser(nexusStorageItemScannerContext.getRequestedByUser());
+		artifactDescriptor.setRequestCount(artifactDescriptor.getRequestCount() + 1);
+
+		backendPluginContext.getEventBus()
+		.post(new RequestLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(), artifactDescriptor.getGroup(), artifactDescriptor.getName(), artifactDescriptor.getVersion(),
+				artifactDescriptor.getClassifier(), artifactDescriptor.getType(),
+				artifactPath, artifactDescriptor.getLastRequestedAt(), artifactDescriptor.getLastRequestedByAddress(),
+				artifactDescriptor.getLastRequestedByUser(), artifactDescriptor.getRequestCount()));
+		
+		return artifactDescriptor;
+	}
+
+	protected NexusMavenArtifactDescriptor scanMaven(StorageItem item, String path, Scanner scanner)
+			throws IOException {
 		ScannerContext context = scanner.getContext();
 		Store store = context.getStore();
-		NexusStorageItemScannerContext nexusStorageItemScannerContext = context.peek(NexusStorageItemScannerContext.class);
+		NexusStorageItemScannerContext nexusStorageItemScannerContext = context
+				.peek(NexusStorageItemScannerContext.class);
 		BackendPluginContext backendPluginContext = nexusStorageItemScannerContext.getBackendPluginContext();
 		Logger logger = backendPluginContext.getLogger();
 
@@ -101,14 +166,16 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		Gav gav = repository.getGavCalculator().pathToGav(item.getRepositoryItemUid().getPath());
 		if (gav == null) {
 			if (logger.isWarnEnabled()) {
-				logger.warn(String.format("Could not determine GAV for StorageItem '%s'.", item.getRepositoryItemUid().getKey()));
+				logger.warn(String.format("Could not determine GAV for StorageItem '%s'.",
+						item.getRepositoryItemUid().getKey()));
 			}
 			return null;
 		}
 		boolean isPom = gav.getExtension().equals("pom");
 
 		String repositoryId = repository.getId();
-		NexusMavenRepositoryDescriptor repositoryDescriptor = nexusStorageItemScannerContext.getMavenRepositoryDescriptor(store, repositoryId);
+		NexusMavenRepositoryDescriptor repositoryDescriptor = nexusStorageItemScannerContext
+				.getMavenRepositoryDescriptor(store, repositoryId);
 
 		String modelId = MavenArtifactHelper.getId(new CoordinatesModel(gav));
 		nexusStorageItemScannerContext.getArtifactToRepositoryMapping().put(modelId, repository);
@@ -122,8 +189,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		}
 
 		CoordinatesArtifact artifactCoordinates = new CoordinatesArtifact(gav);
-		NexusMavenArtifactDescriptor artifactDescriptorBackup = nexusStorageItemScannerContext.getMavenArtifactDescriptor(store, repositoryId,
-				artifactCoordinates);
+		NexusMavenArtifactDescriptor artifactDescriptorBackup = nexusStorageItemScannerContext
+				.getMavenArtifactDescriptor(store, repositoryId, artifactCoordinates);
 
 		if (modelDescriptor == null) {
 			try {
@@ -131,8 +198,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 				StorageFileItem modelItem = (StorageFileItem) item;
 				if (!isPom) {
 					// item is no Maven model => locate model item
-					Gav modelGav = new Gav(gav.getGroupId(), gav.getArtifactId(), gav.getVersion(), null, "pom", gav.getSnapshotBuildNumber(),
-							gav.getSnapshotTimeStamp(), null, false, null, false, null);
+					Gav modelGav = new Gav(gav.getGroupId(), gav.getArtifactId(), gav.getVersion(), null, "pom",
+							gav.getSnapshotBuildNumber(), gav.getSnapshotTimeStamp(), null, false, null, false, null);
 
 					ArtifactStoreRequest modelRequest = new ArtifactStoreRequest(repository, modelGav, false);
 					modelRequest.getRequestContext().put(AccessManager.REQUEST_AUTHORIZED, Boolean.TRUE);
@@ -149,14 +216,17 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 					}
 				});
 
-				context.push(ArtifactResolver.class, new NexusStorageItemScannerArtifactResolver(nexusStorageItemScannerContext));
+				context.push(ArtifactResolver.class,
+						new NexusStorageItemScannerArtifactResolver(nexusStorageItemScannerContext));
 				try {
 					long start = System.currentTimeMillis();
 					modelDescriptor = scanner.scan(modelFile, modelFile.getAbsolutePath(), null);
 					long duration = System.currentTimeMillis() - start;
 
-					backendPluginContext.getEventBus().post(new ModelLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(),
-							model.getGroupId(), model.getArtifactId(), model.getVersion(), modelFile.getAbsolutePath(), duration));
+					backendPluginContext.getEventBus()
+							.post(new ModelLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(),
+									model.getGroupId(), model.getArtifactId(), model.getVersion(),
+									modelFile.getAbsolutePath(), duration));
 				} finally {
 					context.pop(ArtifactResolver.class);
 					context.pop(PomModelBuilder.class);
@@ -165,7 +235,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 				modelDescriptor = markReleaseOrSnaphot(modelDescriptor, MavenPomXmlDescriptor.class, gav, store);
 				modelDescriptor.getDescribes().addAll(describesBackup);
 				repositoryDescriptor.getContainedModels().add(modelDescriptor);
-			} catch (AccessDeniedException | ItemNotFoundException | IllegalOperationException | ModelBuildingException e) {
+			} catch (AccessDeniedException | ItemNotFoundException | IllegalOperationException
+					| ModelBuildingException e) {
 				if (logger.isErrorEnabled()) {
 					logger.error(e.getMessage(), e);
 				}
@@ -176,13 +247,16 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		long start = System.currentTimeMillis();
 		StorageFileItem artifactItem = (StorageFileItem) item;
 		File artifactFile = Util.getFileFromStorageFileItem(artifactItem);
+		String artifactPath = artifactFile.getAbsolutePath();
 
 		NexusMavenArtifactDescriptor artifactDescriptor = null;
 		if (isPom) {
-			artifactDescriptor = nexusStorageItemScannerContext.getMavenArtifactDescriptor(store, repositoryId, artifactCoordinates);
+			artifactDescriptor = nexusStorageItemScannerContext.getMavenArtifactDescriptor(store, repositoryId,
+					artifactCoordinates);
 			if (artifactDescriptorBackup == null) {
-				artifactDescriptor.setFileName(artifactFile.getAbsolutePath());
-				artifactDescriptor = markReleaseOrSnaphot(artifactDescriptor, NexusMavenArtifactDescriptor.class, gav, store);
+				artifactDescriptor.setFileName(artifactPath);
+				artifactDescriptor = markReleaseOrSnaphot(artifactDescriptor, NexusMavenArtifactDescriptor.class, gav,
+						store);
 				repositoryDescriptor.getContainedItems().add(artifactDescriptor);
 			} else {
 				artifactDescriptor.setLastUpdatedAt(System.currentTimeMillis());
@@ -192,18 +266,19 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		} else {
 			if (backendPluginContext.getSettingsProvider().getSettings().isFullScan()) {
 				// Full scan
-				Descriptor descriptor = scanner.scan(artifactFile, artifactFile.getAbsolutePath(), null);
+				Descriptor descriptor = scanner.scan(artifactFile, artifactPath, null);
 				artifactDescriptor = store.addDescriptorType(descriptor, NexusMavenArtifactDescriptor.class);
 				artifactDescriptor.setFullQualifiedName(item.getRepositoryItemUid().getKey());
 			} else {
 				// Regular scan
-				artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class, item.getRepositoryItemUid().getKey());
+				artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class,
+						item.getRepositoryItemUid().getKey());
 			}
 
 			MavenArtifactHelper.setCoordinates(artifactDescriptor, artifactCoordinates);
 			artifactDescriptor.setLastUpdatedByAddress(nexusStorageItemScannerContext.getRequestedByAddress());
 			artifactDescriptor.setLastUpdatedByUser(nexusStorageItemScannerContext.getRequestedByUser());
-			artifactDescriptor.setFileName(artifactFile.getAbsolutePath());
+			artifactDescriptor.setFileName(artifactPath);
 			if (artifactDescriptorBackup == null) {
 				artifactDescriptor.setCreatedAt(System.currentTimeMillis());
 				artifactDescriptor.setCreatedByAddress(nexusStorageItemScannerContext.getRequestedByAddress());
@@ -222,27 +297,34 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 				artifactDescriptorBackup.detachDelete();
 			}
 
-			artifactDescriptor = markReleaseOrSnaphot(artifactDescriptor, NexusMavenArtifactDescriptor.class, gav, store);
+			artifactDescriptor = markReleaseOrSnaphot(artifactDescriptor, NexusMavenArtifactDescriptor.class, gav,
+					store);
 			modelDescriptor.getDescribes().add(artifactDescriptor);
 			repositoryDescriptor.getContainedItems().add(artifactDescriptor);
 		}
 
 		long duration = System.currentTimeMillis() - start;
 		backendPluginContext.getEventBus()
-				.post(new ArtifactLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(), artifactDescriptor.getGroup(),
-						artifactDescriptor.getName(), artifactDescriptor.getVersion(), artifactDescriptor.getClassifier(), artifactDescriptor.getType(),
-						artifactFile.getAbsolutePath(), duration, backendPluginContext.getSettingsProvider().getSettings().isFullScan(),
-						artifactDescriptor.getCreatedAt(), artifactDescriptor.getCreatedByAddress(), artifactDescriptor.getCreatedByUser(),
-						artifactDescriptor.getLastUpdatedAt(), artifactDescriptor.getLastUpdatedByAddress(), artifactDescriptor.getLastUpdatedByUser(),
-						artifactDescriptor.getLastRequestedAt(), artifactDescriptor.getLastRequestedByAddress(), artifactDescriptor.getLastRequestedByUser(),
-						artifactDescriptor.getRequestCount(), artifactDescriptor.toString()));
+				.post(new ArtifactLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(),
+						artifactDescriptor.getGroup(), artifactDescriptor.getName(), artifactDescriptor.getVersion(),
+						artifactDescriptor.getClassifier(), artifactDescriptor.getType(),
+						artifactPath, duration,
+						backendPluginContext.getSettingsProvider().getSettings().isFullScan(),
+						artifactDescriptor.getCreatedAt(), artifactDescriptor.getCreatedByAddress(),
+						artifactDescriptor.getCreatedByUser(), artifactDescriptor.getLastUpdatedAt(),
+						artifactDescriptor.getLastUpdatedByAddress(), artifactDescriptor.getLastUpdatedByUser(),
+						artifactDescriptor.getLastRequestedAt(), artifactDescriptor.getLastRequestedByAddress(),
+						artifactDescriptor.getLastRequestedByUser(), artifactDescriptor.getRequestCount(),
+						artifactDescriptor.toString()));
 
 		return artifactDescriptor;
 	}
 
-	protected <D extends MavenDescriptor> D markReleaseOrSnaphot(D descriptor, Class<? extends D> type, Gav gav, Store store) {
+	protected <D extends MavenDescriptor> D markReleaseOrSnaphot(D descriptor, Class<? extends D> type, Gav gav,
+			Store store) {
 		if (gav.isSnapshot()) {
-			MavenSnapshotDescriptor snapshotDescriptor = store.addDescriptorType(descriptor, MavenSnapshotDescriptor.class);
+			MavenSnapshotDescriptor snapshotDescriptor = store.addDescriptorType(descriptor,
+					MavenSnapshotDescriptor.class);
 			snapshotDescriptor.setTimestamp(gav.getSnapshotTimeStamp());
 			snapshotDescriptor.setSnapshotBuildNumber(gav.getSnapshotBuildNumber());
 			return type.cast(snapshotDescriptor);
