@@ -25,6 +25,7 @@ import org.sonatype.nexus.proxy.events.NexusInitializedEvent;
 import org.sonatype.nexus.proxy.events.NexusStoppedEvent;
 import org.sonatype.nexus.proxy.events.RepositoryItemEventCache;
 import org.sonatype.nexus.proxy.events.RepositoryItemEventRetrieve;
+import org.sonatype.nexus.proxy.maven.maven2.M2GroupRepository;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.ScanStorageItemCommand;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.commands.StoreProviderStart;
@@ -60,8 +61,8 @@ public class Controller implements EventSubscriber {
 	protected final CommandQueue commandQueue;
 
 	@Inject
-	public Controller(BackendPluginContext backendPluginContext, StoreProvider storeProvider, PluginRepositoryProvider pluginRepositoryProvider,
-			CommandQueue commandQueue) {
+	public Controller(BackendPluginContext backendPluginContext, StoreProvider storeProvider,
+			PluginRepositoryProvider pluginRepositoryProvider, CommandQueue commandQueue) {
 		this.backendPluginContext = backendPluginContext;
 		this.storeProvider = storeProvider;
 		this.pluginRepositoryProvider = pluginRepositoryProvider;
@@ -111,8 +112,8 @@ public class Controller implements EventSubscriber {
 			return;
 		}
 
-		commandQueue.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(),
-				evt.getItemContext(), NexusScope.SCAN));
+		commandQueue.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider,
+				pluginRepositoryProvider, evt.getItem(), evt.getItemContext(), NexusScope.SCAN));
 	}
 
 	@Subscribe
@@ -121,8 +122,20 @@ public class Controller implements EventSubscriber {
 			return;
 		}
 
-		commandQueue.enqueueCommand(
-				new ScanStorageItemCommand(backendPluginContext, storeProvider, pluginRepositoryProvider, evt.getItem(), evt.getItemContext(), NexusScope.LOG));
+		if (evt.getEventSender() instanceof M2GroupRepository) {
+			return;
+		}
+
+		commandQueue.enqueueCommand(new ScanStorageItemCommand(backendPluginContext, storeProvider,
+				pluginRepositoryProvider, evt.getItem(), evt.getItemContext(), NexusScope.LOG));
 	}
 
+	// @Subscribe
+	// public void onItem(final RepositoryItemEvent evt) {
+	// backendPluginContext.getLogger()
+	// .info(String.format("\nTimestamp: %s\nSender: %s\nClass: %s\nUID: \n",
+	// new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(evt.getEventDate()),
+	// evt.getEventSender().toString(), evt.getClass().getName(),
+	// evt.getItem().getRepositoryItemUid().getKey()));
+	// }
 }
