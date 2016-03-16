@@ -16,7 +16,11 @@
  */
 
 /*global define,NX*/
-define('nexus-jqassistant-frontend-plugin-boot', [ 'Nexus/jqassistant/controller/AdministrationPanelController' ], function() {
+define('nexus-jqassistant-frontend-plugin-boot', [
+		'Nexus/jqassistant/controller/AdministrationPanelController',
+		'Nexus/jqassistant/controller/FileContainerController' ], function() {
 	NX.log.debug('Module loaded: nexus-jqassistant-frontend-plugin-boot');
-	NX.create('Nexus.jqassistant.controller.AdministrationPanelController').init();
+	NX.create('Nexus.jqassistant.controller.AdministrationPanelController')
+			.init();
+	NX.create('Nexus.jqassistant.controller.FileContainerController').init();
 });
