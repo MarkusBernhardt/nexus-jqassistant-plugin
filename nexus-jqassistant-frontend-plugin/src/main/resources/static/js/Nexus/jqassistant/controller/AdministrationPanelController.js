@@ -64,6 +64,11 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 		});
 
 		me.addNavigationMenu();
+		
+		Sonatype.Events.on('fileContainerInit', function(items) {
+			showMessage('fileContainerInit');
+		});
+
 	},
 
 	/**
