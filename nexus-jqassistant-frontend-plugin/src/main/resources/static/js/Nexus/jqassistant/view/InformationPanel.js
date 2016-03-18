@@ -15,12 +15,32 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/*global define,NX*/
-define('nexus-jqassistant-frontend-plugin-boot', [
-		'Nexus/jqassistant/controller/AdministrationPanelController',
-		'Nexus/jqassistant/controller/InformationPanelController' ], function() {
-	NX.log.debug('Module loaded: nexus-jqassistant-frontend-plugin-boot');
-	NX.create('Nexus.jqassistant.controller.AdministrationPanelController')
-			.init();
-	NX.create('Nexus.jqassistant.controller.InformationPanelController').init();
+/**
+ * jQAssistant information panel.
+ */
+NX.define('Nexus.jqassistant.view.InformationPanel', {
+	extend : 'Ext.Panel',
+
+	mixins : [ 'Nexus.LogAwareMixin' ],
+
+	requires : [ 'Nexus.jqassistant.Icons' ],
+
+	xtype : 'nx-jqassistant-view-information-panel',
+	title : 'jQAssistant',
+	cls : 'nx-jqassistant-view-information-panel',
+
+	border : false,
+	layout : {
+		type : 'vbox',
+		align : 'stretch'
+	},
+
+	/**
+	 * @override
+	 */
+	initComponent : function() {
+		var me = this, icons = Nexus.jqassistant.Icons;
+
+		me.constructor.superclass.initComponent.apply(me, arguments);
+	}
 });

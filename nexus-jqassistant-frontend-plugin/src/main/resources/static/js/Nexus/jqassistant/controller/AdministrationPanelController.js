@@ -64,10 +64,6 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 		});
 
 		me.addNavigationMenu();
-		
-		Sonatype.Events.on('fileContainerInit', function(items) {
-			showMessage('fileContainerInit');
-		});
 
 	},
 
@@ -86,7 +82,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 				tabCode : function() {
 					return Ext.create({
 						xtype : 'nx-jqassistant-view-administration-panel',
-						id : 'jqassistant'
+						id : 'nx-jqassistant-view-administration-panel'
 					});
 				}
 			});
@@ -119,7 +115,7 @@ NX.define('Nexus.jqassistant.controller.AdministrationPanelController', {
 
 				Ext.getCmp('nx-jqassistant-view-settings').setValues(values);
 
-				var tabPanel = Ext.getCmp('jqassistant').down('tabpanel');
+				var tabPanel = Ext.getCmp('nx-jqassistant-view-administration-panel').down('tabpanel');
 				var modelLogView = Ext.getCmp('nx-jqassistant-view-model-log');
 				var artifactLogView = Ext.getCmp('nx-jqassistant-view-artifact-log');
 				var requestLogView = Ext.getCmp('nx-jqassistant-view-request-log');

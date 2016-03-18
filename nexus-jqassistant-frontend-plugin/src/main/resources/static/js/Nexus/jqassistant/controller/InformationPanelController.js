@@ -17,12 +17,12 @@
 
 /*global NX, Ext, Sonatype, Nexus*/
 /**
- * JQAssistant file container controller.
+ * JQAssistant information panel controller.
  */
-NX.define('Nexus.jqassistant.controller.FileContainerController', {
+NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	extend : 'Nexus.controller.Controller',
 
-	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons' ],
+	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.InformationPanel' ],
 
 	init : function() {
 		var me = this;
@@ -36,11 +36,16 @@ NX.define('Nexus.jqassistant.controller.FileContainerController', {
 	addContainerTab : function() {
 		var me = this;
 
-		Sonatype.Events.on('fileContainerInit', function(items) {
-			me.showMessage('fileContainerInit');
-		});
 		Sonatype.Events.on('fileContainerUpdate', function(items) {
 			me.showMessage('fileContainerUpdate');
+		});
+
+		Sonatype.Events.addListener('fileContainerInit', function(items) {
+			me.showMessage('fileContainerInit');
+			items.push(Ext.create({
+				xtype : 'nx-jqassistant-view-information-panel',
+				id : 'nx-jqassistant-view-information-panel'
+			}););
 		});
 	},
 
