@@ -34,11 +34,13 @@ NX.define('Nexus.jqassistant.controller.FileContainerController', {
 	 * @private
 	 */
 	addContainerTab : function() {
+		var me = this;
+
 		Sonatype.Events.on('fileContainerInit', function(items) {
-			showMessage('fileContainerInit');
+			me.showMessage('fileContainerInit');
 		});
 		Sonatype.Events.on('fileContainerUpdate', function(items) {
-			showMessage('fileContainerUpdate');
+			me.showMessage('fileContainerUpdate');
 		});
 	},
 
