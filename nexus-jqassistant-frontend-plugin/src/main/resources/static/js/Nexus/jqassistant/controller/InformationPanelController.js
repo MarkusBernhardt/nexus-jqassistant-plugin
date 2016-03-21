@@ -22,7 +22,8 @@
 NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	extend : 'Nexus.controller.Controller',
 
-	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.InformationPanel' ],
+	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons',
+			'Nexus.jqassistant.view.InformationPanel' ],
 
 	init : function() {
 		var me = this;
@@ -48,9 +49,10 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 			me.createInformationPanel(items);
 		});
 
-		Sonatype.Events.on('artifactContainerUpdate', function(container, data) {
-			me.updateInformationPanel(container, data);
-		});
+		Sonatype.Events.on('artifactContainerUpdate',
+				function(container, data) {
+					me.updateInformationPanel(container, data);
+				});
 
 	},
 
@@ -68,13 +70,43 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	 * @private
 	 */
 	updateInformationPanel : function(container, data) {
-		var panel = container.find('name', 'nx-jqassistant-view-information-panel')[0];
+		var me = this;
+		var panel = container.find('name',
+				'nx-jqassistant-view-information-panel')[0];
 
 		if (data && data.leaf) {
-			panel.showArtifact(data, artifactContainer);
+			me.loadInformationPanel(container, panel);
 		} else {
 			container.hideTab(panel);
 		}
+	},
+
+	/**
+	 * @private
+	 */
+	loadInformationPanel : function(container, panel) {
+		var me = this;
+
+		me.logDebug('Loading information panel');
+
+		Ext.Ajax.request({
+			url : Nexus.siesta.basePath + '/jqassistant/information-panel',
+			method : 'GET',
+
+			scope : me,
+			success : function(response, opts) {
+				me.logDebug('Information Panel: ' + response.responseText);
+				var values = Ext.decode(response.responseText);
+
+				panel.setValues(values);
+
+				if (values.activated === true) {
+					container.showTab(panel);
+				} else {
+					container.hideTab(panel);
+				}
+			}
+		});
 	},
 
 	/**

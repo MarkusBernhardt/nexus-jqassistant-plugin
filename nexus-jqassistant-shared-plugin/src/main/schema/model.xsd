@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-Copyright (C) 2015 Markus Bernhardt
+<!-- Copyright (C) 2015 Markus Bernhardt This program is free software: you 
+	can redistribute it and/or modify it under the terms of the GNU General Public 
+	License as published by the Free Software Foundation, either version 3 of 
+	the License, or (at your option) any later version. This program is distributed 
+	in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even 
+	the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+	See the GNU General Public License for more details. You should have received 
+	a copy of the GNU General Public License along with this program. If not, 
+	see http://www.gnu.org/licenses/. -->
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.
--->
-
-<xsd:schema targetNamespace="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	jaxb:version="2.1"
+<xsd:schema
+	targetNamespace="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0"
+	version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:model="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
 	xsi:schemaLocation="
             http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
             http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
@@ -35,6 +30,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="settings" type="model:settings" />
+
+	<!-- InformationPanel -->
+	<xsd:complexType name="informationPanel">
+		<xsd:sequence>
+			<xsd:element name="activated" type="xsd:boolean" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="informationPanel" type="model:informationPanel" />
 
 	<!-- ArtifactLog -->
 	<xsd:complexType name="artifactLog">
@@ -68,7 +71,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:artifactLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:artifactLog"
+				maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="artifactLogList" type="model:artifactLogList" />
@@ -91,7 +95,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:modelLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:modelLog" maxOccurs="unbounded"
+				minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="modelLogList" type="model:modelLogList" />
@@ -119,7 +124,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:requestLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:requestLog"
+				maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="requestLogList" type="model:requestLogList" />

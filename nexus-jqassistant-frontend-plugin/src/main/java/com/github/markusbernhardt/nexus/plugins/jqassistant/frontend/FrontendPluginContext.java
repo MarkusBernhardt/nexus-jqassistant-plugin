@@ -38,6 +38,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.ArtifactLogProvider;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.InformationPanelProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.ModelLogProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.RequestLogProvider;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.SettingsProvider;
@@ -50,6 +51,8 @@ public class FrontendPluginContext {
 
 	protected final ArtifactLogProvider artifactLogProvider;
 
+	protected final InformationPanelProvider informationPanelProvider;
+
 	protected final ModelLogProvider modelLogProvider;
 
 	protected final RequestLogProvider requestLogProvider;
@@ -57,11 +60,13 @@ public class FrontendPluginContext {
 	protected final SettingsProvider settingsProvider;
 
 	@Inject
-	public FrontendPluginContext(Logger logger, ArtifactLogProvider artifactLogProvider, ModelLogProvider modelLogProvider,
+	public FrontendPluginContext(Logger logger, ArtifactLogProvider artifactLogProvider,
+			InformationPanelProvider informationPanelProvider, ModelLogProvider modelLogProvider,
 			RequestLogProvider requestLogProvider, SettingsProvider settingsProvider) {
 		super();
 		this.logger = logger;
 		this.artifactLogProvider = artifactLogProvider;
+		this.informationPanelProvider = informationPanelProvider;
 		this.modelLogProvider = modelLogProvider;
 		this.requestLogProvider = requestLogProvider;
 		this.settingsProvider = settingsProvider;
@@ -73,6 +78,10 @@ public class FrontendPluginContext {
 
 	public ArtifactLogProvider getArtifactLogProvider() {
 		return artifactLogProvider;
+	}
+
+	public InformationPanelProvider getInformationPanelProvider() {
+		return informationPanelProvider;
 	}
 
 	public ModelLogProvider getModelLogProvider() {
