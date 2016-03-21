@@ -27,26 +27,54 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	init : function() {
 		var me = this;
 
-		me.addContainerTab();
+		me.addInformationPanel();
 	},
 
 	/**
 	 * @private
 	 */
-	addContainerTab : function() {
+	addInformationPanel : function() {
 		var me = this;
 
-		Sonatype.Events.on('fileContainerUpdate', function(items) {
-			me.showMessage('fileContainerUpdate');
+		Sonatype.Events.on('fileContainerInit', function(items) {
+			me.createInformationPanel(items);
 		});
 
-		Sonatype.Events.addListener('fileContainerInit', function(items) {
-			me.showMessage('fileContainerInit');
-			items.push(Ext.create({
-				xtype : 'nx-jqassistant-view-information-panel',
-				id : 'nx-jqassistant-view-information-panel'
-			}););
+		Sonatype.Events.on('fileContainerUpdate', function(container, data) {
+			me.updateInformationPanel(container, data);
 		});
+
+		Sonatype.Events.on('artifactContainerInit', function(items) {
+			me.createInformationPanel(items);
+		});
+
+		Sonatype.Events.on('artifactContainerUpdate', function(container, data) {
+			me.updateInformationPanel(container, data);
+		});
+
+	},
+
+	/**
+	 * @private
+	 */
+	createInformationPanel : function(items) {
+		items.push(Ext.create({
+			xtype : 'nx-jqassistant-view-information-panel',
+			name : 'nx-jqassistant-view-information-panel'
+		}));
+	},
+
+	/**
+	 * @private
+	 */
+	updateInformationPanel : function(container, data) {
+		var panel = container.find('name', 'nx-jqassistant-view-information-panel')[0];
+
+		if (data && data.leaf) {
+			panel.showArtifact(data, artifactContainer);
+		} else {
+			container.hideTab(panel);
+		}
 	},
 
 	/**
