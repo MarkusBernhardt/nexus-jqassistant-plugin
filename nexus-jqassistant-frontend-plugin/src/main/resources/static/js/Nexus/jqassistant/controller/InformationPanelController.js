@@ -98,7 +98,7 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 				me.logDebug('Information Panel: ' + response.responseText);
 				var values = Ext.decode(response.responseText);
 
-				panel.setValues(values);
+				//panel.setValues(values);
 
 				if (values.activated === true) {
 					container.showTab(panel);
