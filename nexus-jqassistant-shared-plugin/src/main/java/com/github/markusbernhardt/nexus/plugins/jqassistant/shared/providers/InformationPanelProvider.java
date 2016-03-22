@@ -16,30 +16,8 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
 
-@Named
-@Singleton
-public class InformationPanelProvider {
-
-	/**
-	 * The settings provider instance
-	 */
-	protected final SettingsProvider settingsProvider;
-
-	@Inject
-	InformationPanelProvider(SettingsProvider settingsProvider) {
-		this.settingsProvider = settingsProvider;
-	}
-
-	public InformationPanelXO getInformationPanel() {
-		InformationPanelXO informationPanel = new InformationPanelXO();
-		informationPanel.setActivated(settingsProvider.getSettings().isActivated());
-		return informationPanel;
-	}
-
+public interface InformationPanelProvider {
+	public InformationPanelXO getInformationPanel();
 }
