@@ -17,8 +17,12 @@
 package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Model;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.nexus.proxy.LocalStorageException;
 import org.sonatype.nexus.proxy.item.RepositoryItemUid;
@@ -35,8 +39,20 @@ import org.sonatype.nexus.proxy.repository.Repository;
 import org.sonatype.nexus.proxy.storage.local.fs.DefaultFSLocalRepositoryStorage;
 
 import com.buschmais.jqassistant.plugin.maven3.api.artifact.Coordinates;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.descriptors.NexusMavenArtifactDescriptor;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ArtifactLogXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.RequestLogXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 
 public class Util {
+
+	public final static ThreadLocal<SimpleDateFormat> timestampFormatter = new ThreadLocal<SimpleDateFormat>() {
+		@Override
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+		}
+	};
 
 	public static boolean checkStorageItemIsMavenArtifact(StorageItem item) {
 		Repository repository = item.getRepositoryItemUid().getRepository();
@@ -77,14 +93,14 @@ public class Util {
 	public static Gav toGav(Artifact artifact) {
 		// fix for bug in M2GavCalculator
 		String classifier = StringUtils.isEmpty(artifact.getClassifier()) ? null : artifact.getClassifier();
-		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier, artifact.getExtension(), null, null, null, false,
-				null, false, null);
+		return new Gav(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(), classifier,
+				artifact.getExtension(), null, null, null, false, null, false, null);
 	}
 
 	public static Gav toGav(Coordinates coordinates) {
 		try {
-			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(), coordinates.getClassifier(), coordinates.getType(), null,
-					null, null, false, null, false, null);
+			return new Gav(coordinates.getGroup(), coordinates.getName(), coordinates.getVersion(),
+					coordinates.getClassifier(), coordinates.getType(), null, null, null, false, null, false, null);
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());
 			throw e;
@@ -146,7 +162,87 @@ public class Util {
 	public static File getFileFromStorageFileItem(StorageFileItem storageFileItem) throws LocalStorageException {
 		Repository repository = storageFileItem.getRepositoryItemUid().getRepository();
 		DefaultFSLocalRepositoryStorage localStorage = (DefaultFSLocalRepositoryStorage) repository.getLocalStorage();
-		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(), storageFileItem.getResourceStoreRequest());
+		return localStorage.getFileFromBase(storageFileItem.getRepositoryItemUid().getRepository(),
+				storageFileItem.getResourceStoreRequest());
+	}
+
+	public static ModelLogXO createModelLogXO(StorageItem item, MavenRepository repository, Model model, File modelFile,
+			long duration) {
+		ModelLogXO modelLogXO = new ModelLogXO();
+		modelLogXO.setUid(item.getRepositoryItemUid().getKey());
+		modelLogXO.setRepository(repository.getName());
+		modelLogXO.setGroupId(model.getGroupId());
+		modelLogXO.setArtifactId(model.getArtifactId());
+		modelLogXO.setVersion(model.getVersion());
+		modelLogXO.setFilename(modelFile.getAbsolutePath());
+		modelLogXO.setDuration(String.format("%,d ms", duration));
+		return modelLogXO;
+	}
+
+	public static ArtifactLogXO createArtifactLogXO(StorageItem item, MavenRepository repository,
+			NexusMavenArtifactDescriptor artifactDescriptor, SettingsXO settingsXO, long duration) {
+		ArtifactLogXO artifactLogXO = new ArtifactLogXO();
+		artifactLogXO.setUid(item.getRepositoryItemUid().getKey());
+		artifactLogXO.setRepository(repository.getName());
+		artifactLogXO.setGroupId(artifactDescriptor.getGroup());
+		artifactLogXO.setArtifactId(artifactDescriptor.getName());
+		artifactLogXO.setVersion(artifactDescriptor.getVersion());
+		artifactLogXO.setClassifier(artifactDescriptor.getClassifier());
+		artifactLogXO.setExtension(artifactDescriptor.getType());
+		artifactLogXO.setFilename(artifactDescriptor.getFileName());
+		artifactLogXO.setDuration(String.format("%,d ms", duration));
+		artifactLogXO.setFullScan(settingsXO.isFullScan());
+		artifactLogXO.setCreatedAt(artifactDescriptor.getCreatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getCreatedAt())));
+		artifactLogXO.setCreatedByAddress(artifactDescriptor.getCreatedByAddress());
+		artifactLogXO.setCreatedByUser(artifactDescriptor.getCreatedByUser());
+		artifactLogXO.setLastUpdatedAt(artifactDescriptor.getLastUpdatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getLastUpdatedAt())));
+		artifactLogXO.setLastUpdatedByAddress(artifactDescriptor.getLastUpdatedByAddress());
+		artifactLogXO.setLastUpdatedByUser(artifactDescriptor.getLastUpdatedByUser());
+		artifactLogXO.setLastRequestedAt(artifactDescriptor.getLastRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getLastRequestedAt())));
+		artifactLogXO.setLastRequestedByAddress(artifactDescriptor.getLastRequestedByAddress());
+		artifactLogXO.setLastRequestedByUser(artifactDescriptor.getLastRequestedByUser());
+		artifactLogXO.setRequestCount(String.format("%,d", artifactDescriptor.getRequestCount()));
+		artifactLogXO.setDescriptors(formatDescriptors(artifactDescriptor.toString()));
+		return artifactLogXO;
+	}
+	
+	public static RequestLogXO createRequestLogXO(StorageItem item, MavenRepository repository,
+			NexusMavenArtifactDescriptor artifactDescriptor) {
+		RequestLogXO requestLogXO = new RequestLogXO();
+		requestLogXO.setUid(item.getRepositoryItemUid().getKey());
+		requestLogXO.setRepository(repository.getName());
+		requestLogXO.setGroupId(artifactDescriptor.getGroup());
+		requestLogXO.setArtifactId(artifactDescriptor.getName());
+		requestLogXO.setVersion(artifactDescriptor.getVersion());
+		requestLogXO.setClassifier(artifactDescriptor.getClassifier());
+		requestLogXO.setExtension(artifactDescriptor.getType());
+		requestLogXO.setFilename(artifactDescriptor.getFileName());
+		requestLogXO.setRequestedAt(artifactDescriptor.getLastRequestedAt() == 0 ? ""
+				: timestampFormatter.get().format(new Date(artifactDescriptor.getLastRequestedAt())));
+		requestLogXO.setRequestedByAddress(artifactDescriptor.getLastRequestedByAddress());
+		requestLogXO.setRequestedByUser(artifactDescriptor.getLastRequestedByUser());
+		requestLogXO.setRequestCount(String.format("%,d", artifactDescriptor.getRequestCount()));
+		return requestLogXO;
+	}
+
+	public static String formatDescriptors(String descriptorString) {
+		StringBuilder formattedDescriptors = new StringBuilder();
+		String verkett = "";
+		String[] tokens = descriptorString.split(",|\\|");
+		Arrays.sort(tokens);
+		for (String token : tokens) {
+			if (!token.endsWith("Descriptor")) {
+				continue;
+			}
+			token.substring(0, token.length() - 10);
+			if (token.length() == 0) {
+				continue;
+			}
+			formattedDescriptors.append(verkett);
+			formattedDescriptors.append(token);
+			verkett = "<br>";
+		}
+		return formattedDescriptors.toString();
 	}
 
 }

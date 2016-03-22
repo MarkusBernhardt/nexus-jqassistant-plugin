@@ -116,7 +116,7 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		StorageFileItem artifactItem = (StorageFileItem) item;
 		File artifactFile = Util.getFileFromStorageFileItem(artifactItem);
 		String artifactPath = artifactFile.getAbsolutePath();
-		
+
 		NexusMavenArtifactDescriptor artifactDescriptor = null;
 		if (artifactDescriptorBackup == null) {
 			artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class, item.getRepositoryItemUid().getKey());
@@ -143,11 +143,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		artifactDescriptor.setRequestCount(artifactDescriptor.getRequestCount() + 1);
 
 		backendPluginContext.getEventBus()
-		.post(new RequestLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(), artifactDescriptor.getGroup(), artifactDescriptor.getName(), artifactDescriptor.getVersion(),
-				artifactDescriptor.getClassifier(), artifactDescriptor.getType(),
-				artifactPath, artifactDescriptor.getLastRequestedAt(), artifactDescriptor.getLastRequestedByAddress(),
-				artifactDescriptor.getLastRequestedByUser(), artifactDescriptor.getRequestCount()));
-		
+				.post(new RequestLogEvent(this, Util.createRequestLogXO(item, repository, artifactDescriptor)));
+
 		return artifactDescriptor;
 	}
 
@@ -223,10 +220,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 					modelDescriptor = scanner.scan(modelFile, modelFile.getAbsolutePath(), null);
 					long duration = System.currentTimeMillis() - start;
 
-					backendPluginContext.getEventBus()
-							.post(new ModelLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(),
-									model.getGroupId(), model.getArtifactId(), model.getVersion(),
-									modelFile.getAbsolutePath(), duration));
+					backendPluginContext.getEventBus().post(new ModelLogEvent(this,
+							Util.createModelLogXO(item, repository, model, modelFile, duration)));
 				} finally {
 					context.pop(ArtifactResolver.class);
 					context.pop(PomModelBuilder.class);
@@ -304,18 +299,8 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		}
 
 		long duration = System.currentTimeMillis() - start;
-		backendPluginContext.getEventBus()
-				.post(new ArtifactLogEvent(this, item.getRepositoryItemUid().getKey(), repository.getName(),
-						artifactDescriptor.getGroup(), artifactDescriptor.getName(), artifactDescriptor.getVersion(),
-						artifactDescriptor.getClassifier(), artifactDescriptor.getType(),
-						artifactPath, duration,
-						backendPluginContext.getSettingsProvider().getSettings().isFullScan(),
-						artifactDescriptor.getCreatedAt(), artifactDescriptor.getCreatedByAddress(),
-						artifactDescriptor.getCreatedByUser(), artifactDescriptor.getLastUpdatedAt(),
-						artifactDescriptor.getLastUpdatedByAddress(), artifactDescriptor.getLastUpdatedByUser(),
-						artifactDescriptor.getLastRequestedAt(), artifactDescriptor.getLastRequestedByAddress(),
-						artifactDescriptor.getLastRequestedByUser(), artifactDescriptor.getRequestCount(),
-						artifactDescriptor.toString()));
+		backendPluginContext.getEventBus().post(new ArtifactLogEvent(this, Util.createArtifactLogXO(item, repository,
+				artifactDescriptor, backendPluginContext.getSettingsProvider().getSettings(), duration)));
 
 		return artifactDescriptor;
 	}

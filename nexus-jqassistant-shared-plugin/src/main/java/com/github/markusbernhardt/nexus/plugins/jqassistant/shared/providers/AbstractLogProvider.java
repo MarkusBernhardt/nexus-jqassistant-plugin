@@ -18,7 +18,6 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,26 +96,6 @@ public abstract class AbstractLogProvider<T, L> implements EventSubscriber {
 		while (log.size() > maxLogSize) {
 			log.removeFirst();
 		}
-	}
-
-	protected String formatDescriptors(String descriptorString) {
-		StringBuilder formattedDescriptors = new StringBuilder();
-		String verkett = "";
-		String[] tokens = descriptorString.split(",|\\|");
-		Arrays.sort(tokens);
-		for (String token : tokens) {
-			if (!token.endsWith("Descriptor")) {
-				continue;
-			}
-			token.substring(0, token.length() - 10);
-			if (token.length() == 0) {
-				continue;
-			}
-			formattedDescriptors.append(verkett);
-			formattedDescriptors.append(token);
-			verkett = "<br>";
-		}
-		return formattedDescriptors.toString();
 	}
 
 	protected abstract L createLogList(int count, int total, List<T> rows);

@@ -18,53 +18,19 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events;
 
 import org.sonatype.nexus.events.AbstractEvent;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ModelLogXO;
+
 public class ModelLogEvent extends AbstractEvent<Object> {
 
-	protected final String uid;
-	protected final String repository;
-	protected final String groupId;
-	protected final String artifactId;
-	protected final String version;
-	protected final String filename;
-	protected final long duration;
+	protected final ModelLogXO modelLogXO;
 
-	public ModelLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String filename, long duration) {
+	public ModelLogEvent(Object component, ModelLogXO modelLogXO) {
 		super(component);
-		this.uid = uid;
-		this.repository = repository;
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-		this.filename = filename;
-		this.duration = duration;
+		this.modelLogXO = modelLogXO;
 	}
 
-	public String getUid() {
-		return uid;
-	}
-
-	public String getRepository() {
-		return repository;
-	}
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-	public String getArtifactId() {
-		return artifactId;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public long getDuration() {
-		return duration;
+	public ModelLogXO getModelLogXO() {
+		return modelLogXO;
 	}
 
 }

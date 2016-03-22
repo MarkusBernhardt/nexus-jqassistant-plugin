@@ -16,7 +16,6 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,21 +41,9 @@ public class RequestLogProvider extends AbstractLogProvider<RequestLogXO, Reques
 
 	@Subscribe
 	public void onRequestLog(final RequestLogEvent evt) {
-		RequestLogXO requestLogXO = new RequestLogXO();
+		RequestLogXO requestLogXO = evt.getRequestLogXO();
 		requestLogXO.setSequence(sequence.incrementAndGet());
 		requestLogXO.setTimestamp(timestampFormatter.get().format(evt.getEventDate()));
-		requestLogXO.setUid(evt.getUid());
-		requestLogXO.setRepository(evt.getRepository());
-		requestLogXO.setGroupId(evt.getGroupId());
-		requestLogXO.setArtifactId(evt.getArtifactId());
-		requestLogXO.setVersion(evt.getVersion());
-		requestLogXO.setClassifier(evt.getClassifier());
-		requestLogXO.setExtension(evt.getExtension());
-		requestLogXO.setFilename(evt.getFilename());
-		requestLogXO.setRequestedAt(evt.getRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getRequestedAt())));
-		requestLogXO.setRequestedByAddress(evt.getRequestedByAddress());
-		requestLogXO.setRequestedByUser(evt.getRequestedByUser());
-		requestLogXO.setRequestCount(String.format("%,d", evt.getRequestCount()));
 
 		log.add(requestLogXO);
 		trimSize();

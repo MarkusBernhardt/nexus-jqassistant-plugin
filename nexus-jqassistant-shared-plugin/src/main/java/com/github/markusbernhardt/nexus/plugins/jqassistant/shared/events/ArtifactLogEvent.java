@@ -18,140 +18,19 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events;
 
 import org.sonatype.nexus.events.AbstractEvent;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.ArtifactLogXO;
+
 public class ArtifactLogEvent extends AbstractEvent<Object> {
 
-	protected final String uid;
-	protected final String repository;
-	protected final String groupId;
-	protected final String artifactId;
-	protected final String version;
-	protected final String classifier;
-	protected final String extension;
-	protected final String filename;
-	protected final long duration;
-	protected final boolean fullScan;
-	protected final long createdAt;
-	protected final String createdByAddress;
-	protected final String createdByUser;
-	protected final long lastUpdatedAt;
-	protected final String lastUpdatedByAddress;
-	protected final String lastUpdatedByUser;
-	protected final long lastRequestedAt;
-	protected final String lastRequestedByAddress;
-	protected final String lastRequestedByUser;
-	protected final long requestCount;
-	protected final String descriptors;
+	protected final ArtifactLogXO artifactLogXO;
 
-	public ArtifactLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
-			String extension, String filename, long duration, boolean fullScan, long createdAt, String createdByAddress, String createdByUser,
-			long lastUpdatedAt, String lastUpdatedByAddress, String lastUpdatedByUser, long lastRequestedAt, String lastRequestedByAddress,
-			String lastRequestedByUser, long requestCount, String descriptors) {
+	public ArtifactLogEvent(Object component, ArtifactLogXO artifactLogXO) {
 		super(component);
-		this.uid = uid;
-		this.repository = repository;
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-		this.classifier = classifier;
-		this.extension = extension;
-		this.filename = filename;
-		this.duration = duration;
-		this.fullScan = fullScan;
-		this.createdAt = createdAt;
-		this.createdByAddress = createdByAddress;
-		this.createdByUser = createdByUser;
-		this.lastUpdatedAt = lastUpdatedAt;
-		this.lastUpdatedByAddress = lastUpdatedByAddress;
-		this.lastUpdatedByUser = lastUpdatedByUser;
-		this.lastRequestedAt = lastRequestedAt;
-		this.lastRequestedByAddress = lastRequestedByAddress;
-		this.lastRequestedByUser = lastRequestedByUser;
-		this.requestCount = requestCount;
-		this.descriptors = descriptors;
+		this.artifactLogXO = artifactLogXO;
 	}
 
-	public String getUid() {
-		return uid;
-	}
-
-	public String getRepository() {
-		return repository;
-	}
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-	public String getArtifactId() {
-		return artifactId;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getClassifier() {
-		return classifier;
-	}
-
-	public String getExtension() {
-		return extension;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public long getDuration() {
-		return duration;
-	}
-
-	public boolean isFullScan() {
-		return fullScan;
-	}
-
-	public long getCreatedAt() {
-		return createdAt;
-	}
-
-	public String getCreatedByAddress() {
-		return createdByAddress;
-	}
-
-	public String getCreatedByUser() {
-		return createdByUser;
-	}
-
-	public long getLastUpdatedAt() {
-		return lastUpdatedAt;
-	}
-
-	public String getLastUpdatedByAddress() {
-		return lastUpdatedByAddress;
-	}
-
-	public String getLastUpdatedByUser() {
-		return lastUpdatedByUser;
-	}
-
-	public long getLastRequestedAt() {
-		return lastRequestedAt;
-	}
-
-	public String getLastRequestedByAddress() {
-		return lastRequestedByAddress;
-	}
-
-	public String getLastRequestedByUser() {
-		return lastRequestedByUser;
-	}
-
-	public long getRequestCount() {
-		return requestCount;
-	}
-
-	public String getDescriptors() {
-		return descriptors;
+	public ArtifactLogXO getArtifactLogXO() {
+		return artifactLogXO;
 	}
 
 }

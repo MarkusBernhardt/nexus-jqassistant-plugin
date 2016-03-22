@@ -41,16 +41,9 @@ public class ModelLogProvider extends AbstractLogProvider<ModelLogXO, ModelLogLi
 
 	@Subscribe
 	public void onModelLog(final ModelLogEvent evt) {
-		ModelLogXO modelLogXO = new ModelLogXO();
+		ModelLogXO modelLogXO = evt.getModelLogXO();
 		modelLogXO.setSequence(sequence.incrementAndGet());
-		modelLogXO.setUid(evt.getUid());
 		modelLogXO.setTimestamp(timestampFormatter.get().format(evt.getEventDate()));
-		modelLogXO.setRepository(evt.getRepository());
-		modelLogXO.setGroupId(evt.getGroupId());
-		modelLogXO.setArtifactId(evt.getArtifactId());
-		modelLogXO.setVersion(evt.getVersion());
-		modelLogXO.setFilename(evt.getFilename());
-		modelLogXO.setDuration(String.format("%,d ms", evt.getDuration()));
 
 		log.add(modelLogXO);
 		trimSize();

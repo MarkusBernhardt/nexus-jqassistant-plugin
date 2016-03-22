@@ -18,84 +18,19 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.events;
 
 import org.sonatype.nexus.events.AbstractEvent;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.RequestLogXO;
+
 public class RequestLogEvent extends AbstractEvent<Object> {
 
-	protected final String uid;
-	protected final String repository;
-	protected final String groupId;
-	protected final String artifactId;
-	protected final String version;
-	protected final String classifier;
-	protected final String extension;
-	protected final String filename;
-	protected final long requestedAt;
-	protected final String requestedByAddress;
-	protected final String requestedByUser;
-	protected final long requestCount;
+	protected final RequestLogXO requestLogXO;
 
-	public RequestLogEvent(Object component, String uid, String repository, String groupId, String artifactId, String version, String classifier,
-			String extension, String filename, long requestedAt, String requestedByAddress, String requestedByUser, long requestCount) {
+	public RequestLogEvent(Object component, RequestLogXO requestLogXO) {
 		super(component);
-		this.uid = uid;
-		this.repository = repository;
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-		this.classifier = classifier;
-		this.extension = extension;
-		this.filename = filename;
-		this.requestedAt = requestedAt;
-		this.requestedByAddress = requestedByAddress;
-		this.requestedByUser = requestedByUser;
-		this.requestCount = requestCount;
+		this.requestLogXO = requestLogXO;
 	}
 
-	public String getUid() {
-		return uid;
-	}
-
-	public String getRepository() {
-		return repository;
-	}
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-	public String getArtifactId() {
-		return artifactId;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getClassifier() {
-		return classifier;
-	}
-
-	public String getExtension() {
-		return extension;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public long getRequestedAt() {
-		return requestedAt;
-	}
-
-	public String getRequestedByAddress() {
-		return requestedByAddress;
-	}
-
-	public String getRequestedByUser() {
-		return requestedByUser;
-	}
-
-	public long getRequestCount() {
-		return requestCount;
+	public RequestLogXO getRequestLogXO() {
+		return requestLogXO;
 	}
 
 }

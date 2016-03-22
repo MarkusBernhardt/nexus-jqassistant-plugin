@@ -16,7 +16,6 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +32,8 @@ import com.google.common.eventbus.Subscribe;
 
 @Named
 @Singleton
-public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, ArtifactLogListXO> implements EventSubscriber {
+public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, ArtifactLogListXO>
+		implements EventSubscriber {
 
 	@Inject
 	public ArtifactLogProvider(SettingsProvider settingsProvider) {
@@ -42,30 +42,9 @@ public class ArtifactLogProvider extends AbstractLogProvider<ArtifactLogXO, Arti
 
 	@Subscribe
 	public void onArtifactLog(final ArtifactLogEvent evt) {
-		ArtifactLogXO artifactLogXO = new ArtifactLogXO();
+		ArtifactLogXO artifactLogXO = evt.getArtifactLogXO();
 		artifactLogXO.setSequence(sequence.incrementAndGet());
 		artifactLogXO.setTimestamp(timestampFormatter.get().format(evt.getEventDate()));
-		artifactLogXO.setUid(evt.getUid());
-		artifactLogXO.setRepository(evt.getRepository());
-		artifactLogXO.setGroupId(evt.getGroupId());
-		artifactLogXO.setArtifactId(evt.getArtifactId());
-		artifactLogXO.setVersion(evt.getVersion());
-		artifactLogXO.setClassifier(evt.getClassifier());
-		artifactLogXO.setExtension(evt.getExtension());
-		artifactLogXO.setFilename(evt.getFilename());
-		artifactLogXO.setDuration(String.format("%,d ms", evt.getDuration()));
-		artifactLogXO.setFullScan(evt.isFullScan());
-		artifactLogXO.setCreatedAt(evt.getCreatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getCreatedAt())));
-		artifactLogXO.setCreatedByAddress(evt.getCreatedByAddress());
-		artifactLogXO.setCreatedByUser(evt.getCreatedByUser());
-		artifactLogXO.setLastUpdatedAt(evt.getLastUpdatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getLastUpdatedAt())));
-		artifactLogXO.setLastUpdatedByAddress(evt.getLastUpdatedByAddress());
-		artifactLogXO.setLastUpdatedByUser(evt.getLastUpdatedByUser());
-		artifactLogXO.setLastRequestedAt(evt.getLastRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(evt.getLastRequestedAt())));
-		artifactLogXO.setLastRequestedByAddress(evt.getLastRequestedByAddress());
-		artifactLogXO.setLastRequestedByUser(evt.getLastRequestedByUser());
-		artifactLogXO.setRequestCount(String.format("%,d", evt.getRequestCount()));
-		artifactLogXO.setDescriptors(formatDescriptors(evt.getDescriptors()));
 
 		log.add(artifactLogXO);
 		trimSize();
