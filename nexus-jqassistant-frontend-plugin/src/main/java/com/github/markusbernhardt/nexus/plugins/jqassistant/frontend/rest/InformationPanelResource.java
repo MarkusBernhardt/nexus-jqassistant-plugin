@@ -22,6 +22,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -33,6 +34,7 @@ import org.sonatype.sisu.siesta.common.Resource;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPlugin;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPluginContext;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.SettingsXO;
 
 @Named
 @Singleton
@@ -56,9 +58,10 @@ public class InformationPanelResource extends ComponentSupport implements Resour
 	 * Returns the actual settings.
 	 */
 	@GET
+	@Consumes({ APPLICATION_JSON, APPLICATION_XML })
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
 	@RequiresPermissions(FrontendPlugin.PERMISSION)
-	public synchronized InformationPanelXO get() {
+	public synchronized InformationPanelXO get(SettingsXO settings) {
 		return frontendPluginContext.getInformationPanelProvider().getInformationPanel();
 
 	}

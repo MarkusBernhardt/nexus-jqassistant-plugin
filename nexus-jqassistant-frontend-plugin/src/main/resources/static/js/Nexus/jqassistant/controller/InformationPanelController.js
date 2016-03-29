@@ -22,8 +22,7 @@
 NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	extend : 'Nexus.controller.Controller',
 
-	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons',
-			'Nexus.jqassistant.view.InformationPanel' ],
+	requires : [ 'Nexus.siesta', 'Nexus.jqassistant.Icons', 'Nexus.jqassistant.view.InformationPanel' ],
 
 	init : function() {
 		var me = this;
@@ -49,10 +48,9 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 			me.createInformationPanel(items);
 		});
 
-		Sonatype.Events.on('artifactContainerUpdate',
-				function(container, data) {
-					me.updateInformationPanel(container, data);
-				});
+		Sonatype.Events.on('artifactContainerUpdate', function(container, data) {
+			me.updateInformationPanel(container, data);
+		});
 
 	},
 
@@ -71,11 +69,27 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	 */
 	updateInformationPanel : function(container, data) {
 		var me = this;
-		var panel = container.find('name',
-				'nx-jqassistant-view-information-panel')[0];
+		var panel = container.find('name', 'nx-jqassistant-view-information-panel')[0];
 
-		if (data && data.leaf) {
-			me.loadInformationPanel(container, panel);
+		if (data && data.leaf && data.resourceURI) {
+			Ext.Ajax.request({
+				url : data.resourceURI + '?describe=maven2&isLocal=true',
+				method : 'GET',
+				scope : me,
+				suppressStatus : '404',
+				callback : function(options, isSuccess, response) {
+					if (isSuccess) {
+						me.logDebug('Information Panel: ' + response.responseText);
+						var values = Ext.decode(response.responseText);
+						me.loadInformationPanel(container, panel, values);
+					} else {
+						container.hideTab(this);
+						if (response.status != 404) {
+							Sonatype.utils.connectionError(response, 'Unable to retrieve Maven information.');
+						}
+					}
+				},
+			});
 		} else {
 			container.hideTab(panel);
 		}
@@ -84,7 +98,7 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 	/**
 	 * @private
 	 */
-	loadInformationPanel : function(container, panel) {
+	loadInformationPanel : function(container, panel, data) {
 		var me = this;
 
 		me.logDebug('Loading information panel');
@@ -92,13 +106,14 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 		Ext.Ajax.request({
 			url : Nexus.siesta.basePath + '/jqassistant/information-panel',
 			method : 'GET',
+			jsonData : data,
 
 			scope : me,
 			success : function(response, opts) {
 				me.logDebug('Information Panel: ' + response.responseText);
 				var values = Ext.decode(response.responseText);
 
-				//panel.setValues(values);
+				// panel.setValues(values);
 
 				if (values.activated === true) {
 					container.showTab(panel);
