@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.BackendPluginContext;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.Maven2ArtifactInfoResourceXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.InformationPanelProvider;
 
 @Named
@@ -39,7 +40,7 @@ public class InformationPanelProviderImpl implements InformationPanelProvider {
 	}
 
 	@Override
-	public InformationPanelXO getInformationPanel() {
+	public InformationPanelXO getInformationPanel(Maven2ArtifactInfoResourceXO maven2ArtifactInfoResourceXO) {
 		InformationPanelXO informationPanel = new InformationPanelXO();
 		informationPanel.setActivated(backendPluginContext.getSettingsProvider().getSettings().isActivated());
 		return informationPanel;

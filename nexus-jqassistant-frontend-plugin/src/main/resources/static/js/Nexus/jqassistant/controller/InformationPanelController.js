@@ -76,12 +76,12 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 				url : data.resourceURI + '?describe=maven2&isLocal=true',
 				method : 'GET',
 				scope : me,
-				suppressStatus : '404',
+				suppressStatus : 404,
 				callback : function(options, isSuccess, response) {
 					if (isSuccess) {
 						me.logDebug('Information Panel: ' + response.responseText);
 						var values = Ext.decode(response.responseText);
-						me.loadInformationPanel(container, panel, values);
+						me.loadInformationPanel(container, panel, values.data);
 					} else {
 						container.hideTab(this);
 						if (response.status != 404) {
@@ -105,7 +105,7 @@ NX.define('Nexus.jqassistant.controller.InformationPanelController', {
 
 		Ext.Ajax.request({
 			url : Nexus.siesta.basePath + '/jqassistant/information-panel',
-			method : 'GET',
+			method : 'POST',
 			jsonData : data,
 
 			scope : me,
