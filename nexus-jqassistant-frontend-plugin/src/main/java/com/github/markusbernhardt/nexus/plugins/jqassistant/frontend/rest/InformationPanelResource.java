@@ -27,14 +27,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 import org.sonatype.sisu.siesta.common.Resource;
 
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPlugin;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.frontend.FrontendPluginContext;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelUpdateRequestXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.Maven2ArtifactInfoResourceXO;
 
 @Named
 @Singleton
@@ -60,9 +59,7 @@ public class InformationPanelResource extends ComponentSupport implements Resour
 	@POST
 	@Consumes({ APPLICATION_JSON, APPLICATION_XML })
 	@Produces({ APPLICATION_JSON, APPLICATION_XML })
-	@RequiresPermissions(FrontendPlugin.PERMISSION)
-	public synchronized InformationPanelXO post(Maven2ArtifactInfoResourceXO maven2ArtifactInfoResourceXO) {
-		return frontendPluginContext.getInformationPanelProvider().getInformationPanel(maven2ArtifactInfoResourceXO);
-
+	public synchronized InformationPanelXO post(InformationPanelUpdateRequestXO informationPanelUpdateRequest) {
+		return frontendPluginContext.getInformationPanelProvider().getInformationPanel(informationPanelUpdateRequest);
 	}
 }

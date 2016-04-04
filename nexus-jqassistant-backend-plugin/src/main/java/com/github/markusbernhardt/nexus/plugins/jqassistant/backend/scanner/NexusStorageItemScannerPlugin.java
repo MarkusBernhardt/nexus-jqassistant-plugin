@@ -34,6 +34,7 @@ import org.sonatype.nexus.proxy.item.StorageItem;
 import org.sonatype.nexus.proxy.maven.ArtifactStoreRequest;
 import org.sonatype.nexus.proxy.maven.MavenRepository;
 import org.sonatype.nexus.proxy.maven.gav.Gav;
+import org.sonatype.nexus.proxy.maven.maven2.M2Repository;
 
 import com.buschmais.jqassistant.core.scanner.api.Scanner;
 import com.buschmais.jqassistant.core.scanner.api.ScannerContext;
@@ -157,7 +158,7 @@ public class NexusStorageItemScannerPlugin extends AbstractScannerPlugin<Storage
 		BackendPluginContext backendPluginContext = nexusStorageItemScannerContext.getBackendPluginContext();
 		Logger logger = backendPluginContext.getLogger();
 
-		MavenRepository repository = item.getRepositoryItemUid().getRepository().adaptToFacet(MavenRepository.class);
+		M2Repository repository = item.getRepositoryItemUid().getRepository().adaptToFacet(M2Repository.class);
 		nexusStorageItemScannerContext.setPrimaryRemoteRepository(repository);
 
 		Gav gav = repository.getGavCalculator().pathToGav(item.getRepositoryItemUid().getPath());

@@ -16,9 +16,9 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers;
 
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelUpdateRequestXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.Maven2ArtifactInfoResourceXO;
 
 public interface InformationPanelProvider {
-	public InformationPanelXO getInformationPanel(Maven2ArtifactInfoResourceXO maven2ArtifactInfoResourceXO);
+	public InformationPanelXO getInformationPanel(InformationPanelUpdateRequestXO informationPanelUpdateRequest);
 }

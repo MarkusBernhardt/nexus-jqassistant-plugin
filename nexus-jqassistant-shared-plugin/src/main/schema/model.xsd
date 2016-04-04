@@ -9,9 +9,11 @@
 	a copy of the GNU General Public License along with this program. If not, 
 	see http://www.gnu.org/licenses/. -->
 
-<xsd:schema targetNamespace="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	jaxb:version="2.1"
+<xsd:schema
+	targetNamespace="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0"
+	version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:model="http://github.com/MarkusBernhardt/xsd/nexus-jqassistant-plugin/rest/1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
 	xsi:schemaLocation="
             http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
             http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
@@ -69,7 +71,8 @@
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:artifactLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:artifactLog"
+				maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="artifactLogList" type="model:artifactLogList" />
@@ -92,7 +95,8 @@
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:modelLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:modelLog" maxOccurs="unbounded"
+				minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="modelLogList" type="model:modelLogList" />
@@ -120,23 +124,18 @@
 		<xsd:sequence>
 			<xsd:element name="count" type="xsd:int" />
 			<xsd:element name="total" type="xsd:int" />
-			<xsd:element name="rows" type="model:requestLog" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="rows" type="model:requestLog"
+				maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:element name="requestLogList" type="model:requestLogList" />
 
-	<!-- Nexus restlet1x class Maven2ArtifactInfoResource -->
-	<xsd:complexType name="maven2ArtifactInfoResource">
+	<!-- Information Panel Update Request -->
+	<xsd:complexType name="informationPanelUpdateRequest">
 		<xsd:sequence>
-			<xsd:element name="groupId" type="xsd:string" />
-			<xsd:element name="artifactId" type="xsd:string" />
-			<xsd:element name="version" type="xsd:string" />
-			<xsd:element name="baseVersion" type="xsd:string" />
-			<xsd:element name="classifier" type="xsd:string" />
-			<xsd:element name="extension" type="xsd:string" />
-			<xsd:element name="dependencyXmlChunk" type="xsd:string" />
+			<xsd:element name="resourceURI" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
-	<xsd:element name="maven2ArtifactInfoResource" type="model:maven2ArtifactInfoResource" />
+	<xsd:element name="informationPanelUpdateRequest" type="model:informationPanelUpdateRequest" />
 
 </xsd:schema>

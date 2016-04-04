@@ -34,6 +34,7 @@ import org.sonatype.nexus.proxy.item.StorageFileItem;
 import org.sonatype.nexus.proxy.maven.ArtifactStoreRequest;
 import org.sonatype.nexus.proxy.maven.MavenRepository;
 import org.sonatype.nexus.proxy.maven.gav.Gav;
+import org.sonatype.nexus.proxy.maven.maven2.M2Repository;
 
 import com.buschmais.jqassistant.plugin.maven3.api.artifact.MavenArtifactHelper;
 
@@ -79,7 +80,7 @@ public class NexusStorageItemScannerWorkspaceReader implements WorkspaceReader {
 	}
 
 	public StorageFileItem findStorageItem(Gav gav) {
-		for (MavenRepository repository : nexusStorageItemScannerContext.getRemoteRepos()) {
+		for (M2Repository repository : nexusStorageItemScannerContext.getRemoteRepos()) {
 			try {
 				ArtifactStoreRequest gavRequest = new ArtifactStoreRequest(repository, gav, false);
 				gavRequest.getRequestContext().put(AccessManager.REQUEST_AUTHORIZED, Boolean.TRUE);

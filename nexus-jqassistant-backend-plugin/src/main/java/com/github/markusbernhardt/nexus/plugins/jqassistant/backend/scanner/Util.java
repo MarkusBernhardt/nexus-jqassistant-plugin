@@ -18,8 +18,10 @@ package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
@@ -31,10 +33,12 @@ import org.sonatype.nexus.proxy.item.StorageItem;
 import org.sonatype.nexus.proxy.item.uid.IsHiddenAttribute;
 import org.sonatype.nexus.proxy.maven.MavenRepository;
 import org.sonatype.nexus.proxy.maven.gav.Gav;
+import org.sonatype.nexus.proxy.maven.maven2.M2Repository;
 import org.sonatype.nexus.proxy.maven.maven2.Maven2ContentClass;
 import org.sonatype.nexus.proxy.maven.uid.IsMavenArtifactSignatureAttribute;
 import org.sonatype.nexus.proxy.maven.uid.IsMavenChecksumAttribute;
 import org.sonatype.nexus.proxy.maven.uid.IsMavenRepositoryMetadataAttribute;
+import org.sonatype.nexus.proxy.registry.RepositoryRegistry;
 import org.sonatype.nexus.proxy.repository.Repository;
 import org.sonatype.nexus.proxy.storage.local.fs.DefaultFSLocalRepositoryStorage;
 
@@ -192,20 +196,23 @@ public class Util {
 		artifactLogXO.setFilename(artifactDescriptor.getFileName());
 		artifactLogXO.setDuration(String.format("%,d ms", duration));
 		artifactLogXO.setFullScan(settingsXO.isFullScan());
-		artifactLogXO.setCreatedAt(artifactDescriptor.getCreatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getCreatedAt())));
+		artifactLogXO.setCreatedAt(artifactDescriptor.getCreatedAt() == 0 ? ""
+				: timestampFormatter.get().format(new Date(artifactDescriptor.getCreatedAt())));
 		artifactLogXO.setCreatedByAddress(artifactDescriptor.getCreatedByAddress());
 		artifactLogXO.setCreatedByUser(artifactDescriptor.getCreatedByUser());
-		artifactLogXO.setLastUpdatedAt(artifactDescriptor.getLastUpdatedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getLastUpdatedAt())));
+		artifactLogXO.setLastUpdatedAt(artifactDescriptor.getLastUpdatedAt() == 0 ? ""
+				: timestampFormatter.get().format(new Date(artifactDescriptor.getLastUpdatedAt())));
 		artifactLogXO.setLastUpdatedByAddress(artifactDescriptor.getLastUpdatedByAddress());
 		artifactLogXO.setLastUpdatedByUser(artifactDescriptor.getLastUpdatedByUser());
-		artifactLogXO.setLastRequestedAt(artifactDescriptor.getLastRequestedAt() == 0 ? "" : timestampFormatter.get().format(new Date(artifactDescriptor.getLastRequestedAt())));
+		artifactLogXO.setLastRequestedAt(artifactDescriptor.getLastRequestedAt() == 0 ? ""
+				: timestampFormatter.get().format(new Date(artifactDescriptor.getLastRequestedAt())));
 		artifactLogXO.setLastRequestedByAddress(artifactDescriptor.getLastRequestedByAddress());
 		artifactLogXO.setLastRequestedByUser(artifactDescriptor.getLastRequestedByUser());
 		artifactLogXO.setRequestCount(String.format("%,d", artifactDescriptor.getRequestCount()));
 		artifactLogXO.setDescriptors(formatDescriptors(artifactDescriptor.toString()));
 		return artifactLogXO;
 	}
-	
+
 	public static RequestLogXO createRequestLogXO(StorageItem item, MavenRepository repository,
 			NexusMavenArtifactDescriptor artifactDescriptor) {
 		RequestLogXO requestLogXO = new RequestLogXO();
@@ -245,4 +252,14 @@ public class Util {
 		return formattedDescriptors.toString();
 	}
 
+	public static List<M2Repository> getM2RepositoryList(RepositoryRegistry repositoryRegistry) {
+		List<M2Repository> m2RepositoryList = new ArrayList<>();
+		for (MavenRepository m2Repository : repositoryRegistry.getRepositoriesWithFacet(MavenRepository.class)) {
+			if (!M2Repository.class.isAssignableFrom(m2Repository.getClass())) {
+				continue;
+			}
+			m2RepositoryList.add((M2Repository) m2Repository);
+		}
+		return m2RepositoryList;
+	}
 }

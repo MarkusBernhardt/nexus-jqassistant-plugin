@@ -16,7 +16,6 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ import org.apache.maven.model.building.ModelSource;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.nexus.plugins.mavenbridge.internal.DefaultNexusAether;
-import org.sonatype.nexus.proxy.maven.MavenRepository;
 import org.sonatype.nexus.proxy.maven.maven2.M2Repository;
 import org.sonatype.sisu.maven.bridge.support.ModelBuildingRequestBuilder;
 
@@ -55,12 +53,12 @@ public class NexusStorageItemScannerContext {
 	/**
 	 * The list of remote repositories for dependency lookup. Created if needed.
 	 */
-	protected List<MavenRepository> remoteReposLazy;
+	protected List<M2Repository> remoteReposLazy;
 
 	/**
 	 * Mapping of Maven artifact to repositories
 	 */
-	protected Map<String, MavenRepository> artifactToRepositoryMappingLazy;
+	protected Map<String, M2Repository> artifactToRepositoryMappingLazy;
 
 	/**
 	 * Aether workspace reader. Created if needed.
@@ -73,8 +71,8 @@ public class NexusStorageItemScannerContext {
 		this.itemContext = itemContext;
 	}
 
-	public void setPrimaryRemoteRepository(MavenRepository repository) {
-		List<MavenRepository> remoteRepos = getRemoteRepos();
+	public void setPrimaryRemoteRepository(M2Repository repository) {
+		List<M2Repository> remoteRepos = getRemoteRepos();
 		remoteRepos.remove(repository);
 		remoteRepos.add(0, repository);
 	}
@@ -83,21 +81,15 @@ public class NexusStorageItemScannerContext {
 		return backendPluginContext;
 	}
 
-	public List<MavenRepository> getRemoteRepos() {
+	public List<M2Repository> getRemoteRepos() {
 		if (remoteReposLazy == null) {
-			remoteReposLazy = new ArrayList<>();
-			for (MavenRepository remoteRepo : getBackendPluginContext().getRepositoryRegistry().getRepositoriesWithFacet(MavenRepository.class)) {
-				if (!M2Repository.class.isAssignableFrom(remoteRepo.getClass())) {
-					continue;
-				}
-				// TODO Limit repositories via context
-				remoteReposLazy.add(remoteRepo);
-			}
+			// TODO Limit repositories via context
+			remoteReposLazy = Util.getM2RepositoryList(getBackendPluginContext().getRepositoryRegistry());
 		}
 		return remoteReposLazy;
 	}
 
-	public Map<String, MavenRepository> getArtifactToRepositoryMapping() {
+	public Map<String, M2Repository> getArtifactToRepositoryMapping() {
 		if (artifactToRepositoryMappingLazy == null) {
 			artifactToRepositoryMappingLazy = new HashMap<>();
 		}
@@ -116,18 +108,20 @@ public class NexusStorageItemScannerContext {
 		try {
 			Thread.currentThread().setContextClassLoader(getBackendPluginContext().getWebappClassLoader());
 			if (remoteReposLazy == null || remoteReposLazy.isEmpty()) {
-				throw new IllegalArgumentException("Participant repositories in DefaultJqaNexusMavenBridge must have at least one element!");
+				throw new IllegalArgumentException(
+						"Participant repositories in DefaultJqaNexusMavenBridge must have at least one element!");
 			}
 
 			MavenRepositorySystemSession session = new MavenRepositorySystemSession();
-			LocalRepository localRepo = new LocalRepository(
-					getBackendPluginContext().getApplicationDirectories().getWorkDirectory(DefaultNexusAether.LOCAL_REPO_DIR));
-			session.setLocalRepositoryManager(getBackendPluginContext().getRepositorySystem().newLocalRepositoryManager(localRepo));
+			LocalRepository localRepo = new LocalRepository(getBackendPluginContext().getApplicationDirectories()
+					.getWorkDirectory(DefaultNexusAether.LOCAL_REPO_DIR));
+			session.setLocalRepositoryManager(
+					getBackendPluginContext().getRepositorySystem().newLocalRepositoryManager(localRepo));
 			session.setWorkspaceReader(getWorkspaceReader());
 			session.setOffline(true);
 
-			return getBackendPluginContext().getModelResolver()
-					.resolveModel(ModelBuildingRequestBuilder.model().setModelSource(modelSource).setProcessPlugins(true), session);
+			return getBackendPluginContext().getModelResolver().resolveModel(
+					ModelBuildingRequestBuilder.model().setModelSource(modelSource).setProcessPlugins(true), session);
 		} finally {
 			Thread.currentThread().setContextClassLoader(classLoaderBackup);
 		}
@@ -145,7 +139,8 @@ public class NexusStorageItemScannerContext {
 	public NexusMavenRepositoryDescriptor getMavenRepositoryDescriptor(Store store, String repositoryId) {
 		NexusRepositoryDescriptor repositoryDescriptor = store.find(NexusRepositoryDescriptor.class, repositoryId);
 		if (repositoryDescriptor == null) {
-			NexusMavenRepositoryDescriptor mavenRepositoryDescriptor = store.create(NexusMavenRepositoryDescriptor.class);
+			NexusMavenRepositoryDescriptor mavenRepositoryDescriptor = store
+					.create(NexusMavenRepositoryDescriptor.class);
 			mavenRepositoryDescriptor.setId(repositoryId);
 			return mavenRepositoryDescriptor;
 		} else if (NexusMavenRepositoryDescriptor.class.isAssignableFrom(repositoryDescriptor.getClass())) {
@@ -155,7 +150,8 @@ public class NexusStorageItemScannerContext {
 		}
 	}
 
-	public NexusMavenArtifactDescriptor getMavenArtifactDescriptor(Store store, String repositoryId, Coordinates artifactCoordinates) {
+	public NexusMavenArtifactDescriptor getMavenArtifactDescriptor(Store store, String repositoryId,
+			Coordinates artifactCoordinates) {
 		String storageItemId = Util.getStorageItemUid(repositoryId, artifactCoordinates);
 		NexusStorageItemDescriptor storageItemDescriptor = store.find(NexusStorageItemDescriptor.class, storageItemId);
 		if (storageItemDescriptor == null) {
@@ -167,10 +163,13 @@ public class NexusStorageItemScannerContext {
 		}
 	}
 
-	public NexusMavenArtifactDescriptor getOrCreateArtifactDescriptor(Store store, String repositoryId, Coordinates artifactCoordinates) {
-		NexusMavenArtifactDescriptor artifactDescriptor = getMavenArtifactDescriptor(store, repositoryId, artifactCoordinates);
+	public NexusMavenArtifactDescriptor getOrCreateArtifactDescriptor(Store store, String repositoryId,
+			Coordinates artifactCoordinates) {
+		NexusMavenArtifactDescriptor artifactDescriptor = getMavenArtifactDescriptor(store, repositoryId,
+				artifactCoordinates);
 		if (artifactDescriptor == null) {
-			artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class, Util.getStorageItemUid(repositoryId, artifactCoordinates));
+			artifactDescriptor = store.create(NexusMavenArtifactDescriptor.class,
+					Util.getStorageItemUid(repositoryId, artifactCoordinates));
 			artifactDescriptor.setCreatedAt(System.currentTimeMillis());
 			artifactDescriptor.setCreatedByAddress(getRequestedByAddress());
 			artifactDescriptor.setCreatedByUser(getRequestedByUser());

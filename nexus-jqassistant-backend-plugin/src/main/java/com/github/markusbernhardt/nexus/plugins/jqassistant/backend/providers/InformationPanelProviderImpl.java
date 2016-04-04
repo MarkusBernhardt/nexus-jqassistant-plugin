@@ -16,13 +16,18 @@
  */
 package com.github.markusbernhardt.nexus.plugins.jqassistant.backend.providers;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.proxy.maven.maven2.M2Repository;
+
 import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.BackendPluginContext;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.backend.scanner.Util;
+import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelUpdateRequestXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.InformationPanelXO;
-import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.model.Maven2ArtifactInfoResourceXO;
 import com.github.markusbernhardt.nexus.plugins.jqassistant.shared.providers.InformationPanelProvider;
 
 @Named
@@ -40,9 +45,18 @@ public class InformationPanelProviderImpl implements InformationPanelProvider {
 	}
 
 	@Override
-	public InformationPanelXO getInformationPanel(Maven2ArtifactInfoResourceXO maven2ArtifactInfoResourceXO) {
+	public InformationPanelXO getInformationPanel(InformationPanelUpdateRequestXO informationPanelUpdateRequest) {
 		InformationPanelXO informationPanel = new InformationPanelXO();
 		informationPanel.setActivated(backendPluginContext.getSettingsProvider().getSettings().isActivated());
+
+		backendPluginContext.getLogger().error(informationPanelUpdateRequest.getResourceURI());
+
+		List<M2Repository> repositories = Util.getM2RepositoryList(backendPluginContext.getRepositoryRegistry());
+		for (M2Repository repository : repositories) {
+			backendPluginContext.getLogger().error(repository.getLocalUrl());
+			backendPluginContext.getLogger().error(repository.getRemoteUrl());
+		}
+
 		return informationPanel;
 	}
 
